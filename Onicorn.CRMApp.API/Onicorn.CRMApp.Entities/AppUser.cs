@@ -16,5 +16,7 @@ namespace Onicorn.CRMApp.Entities
 
         public int GenderId { get; set; }
         public Gender? Gender { get; set; }
+
+        public List<Task>? Tasks { get; set; }
     }
 }
