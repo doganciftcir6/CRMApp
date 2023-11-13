@@ -11,7 +11,7 @@ namespace Onicorn.CRMApp.Entities
     {
         [Key]
         public int Id { get; set; }
-        public int SalesAmount { get; set; }
+        public decimal SalesAmount { get; set; }
         public DateTime SalesDate { get; set; }
         public bool Status { get; set; }
 
