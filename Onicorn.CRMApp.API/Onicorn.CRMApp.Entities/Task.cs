@@ -15,7 +15,6 @@ namespace Onicorn.CRMApp.Entities
         public string? Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime FinishDate { get; set; }
-        public DateTime InsertTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public bool Status { get; set; }
 
