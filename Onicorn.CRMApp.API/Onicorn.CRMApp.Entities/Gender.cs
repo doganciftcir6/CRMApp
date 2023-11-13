@@ -12,6 +12,6 @@ namespace Onicorn.CRMApp.Entities
         [Key]
         public int Id { get; set; }
         public string? Definition { get; set; }
-        public List<AppUser>? ProjectUsers { get; set; }
+        public List<AppUser>? AppUsers { get; set; }
     }
 }
