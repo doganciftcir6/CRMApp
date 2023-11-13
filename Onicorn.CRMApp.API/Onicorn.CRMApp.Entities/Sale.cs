@@ -18,5 +18,8 @@ namespace Onicorn.CRMApp.Entities
 
         public int ProjectId { get; set; }
         public Project? Project { get; set; }
+
+        public int SaleSituationId { get; set; }
+        public SaleSituation? SaleSituation { get; set; }
     }
 }
