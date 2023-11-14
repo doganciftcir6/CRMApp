@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Onicorn.CRMApp.Business.CustomDescriber;
 using Onicorn.CRMApp.Business.Services.Concrete;
 using Onicorn.CRMApp.Business.Services.Interfaces;
+using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.AppUserValidations;
 using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
+using Onicorn.CRMApp.Dtos.AppUserDtos;
 using Onicorn.CRMApp.Entities;
 using System;
 using System.Collections.Generic;
@@ -39,6 +42,9 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             //Scopes,Singletons,Transients
             services.AddScoped<IUow, Uow>();
             services.AddScoped<IAuthService, AuthService>();
+            //FluentValidations
+            services.AddScoped<IValidator<AppUserRegisterDto>, AppUserRegisterDtoValidator>();
+            services.AddScoped<IValidator<AppUserLoginDto>, AppUserLoginDtoValidator>();
         }
     }
 }
