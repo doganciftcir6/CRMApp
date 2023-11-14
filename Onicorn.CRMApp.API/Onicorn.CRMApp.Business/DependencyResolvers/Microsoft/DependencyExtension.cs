@@ -13,6 +13,7 @@ using Onicorn.CRMApp.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,6 +46,8 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             //FluentValidations
             services.AddScoped<IValidator<AppUserRegisterDto>, AppUserRegisterDtoValidator>();
             services.AddScoped<IValidator<AppUserLoginDto>, AppUserLoginDtoValidator>();
+            //AutoMapper
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
     }
 }

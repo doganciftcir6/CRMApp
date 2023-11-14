@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
@@ -20,13 +21,15 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IValidator<AppUserRegisterDto> _AppUserRegisterDtoValidator;
         private readonly IValidator<AppUserLoginDto> _AppUserLoginDtoValidator;
-        public AuthService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager, IValidator<AppUserRegisterDto> appUserRegisterDtoValidator, IValidator<AppUserLoginDto> appUserLoginDtoValidator)
+        private readonly IMapper _mapper;
+        public AuthService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager, IValidator<AppUserRegisterDto> appUserRegisterDtoValidator, IValidator<AppUserLoginDto> appUserLoginDtoValidator, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _AppUserRegisterDtoValidator = appUserRegisterDtoValidator;
             _AppUserLoginDtoValidator = appUserLoginDtoValidator;
+            _mapper = mapper;
         }
 
         public async Task<CustomResponse<NoContent>> LoginAsync(AppUserLoginDto appUserLoginDto)
@@ -73,16 +76,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             var validationResult = _AppUserRegisterDtoValidator.Validate(appUserRegisterDto);
             if (validationResult.IsValid)
             {
-                AppUser appUser = new AppUser()
-                {
-                    Firstname = appUserRegisterDto.Firstname,
-                    Lastname = appUserRegisterDto.Lastname,
-                    Email = appUserRegisterDto.Email,
-                    UserName = appUserRegisterDto.Username,
-                    PhoneNumber = appUserRegisterDto.PhoneNumber,
-                    ImageURL = appUserRegisterDto.ImageURL,
-                    GenderId = appUserRegisterDto.GenderId,
-                };
+                var appUser = _mapper.Map<AppUser>(appUserRegisterDto);
                 var registerResult = await _userManager.CreateAsync(appUser, appUserRegisterDto.Password);
                 if (registerResult.Succeeded)
                 {
