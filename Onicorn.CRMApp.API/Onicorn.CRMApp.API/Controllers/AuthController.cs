@@ -25,5 +25,16 @@ namespace Onicorn.CRMApp.API.Controllers
             }
             return Ok("User eklendi");
         }
+        [HttpPost("LoginUser")]
+        public async Task<IActionResult> Login(AppUserLoginDto appUserLoginDto)
+        {
+
+            var result = await _authService.LoginAsync(appUserLoginDto);
+            if (!result)
+            {
+                return BadRequest("Login başarısız");
+            }
+            return Ok("Login başarılı");
+        }
     }
 }
