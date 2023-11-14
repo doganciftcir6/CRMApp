@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Onicorn.CRMApp.DataAccess\Onicorn.CRMApp.DataAccess.csproj" />
+    <ProjectReference Include="..\Onicorn.CRMApp.Dtos\Onicorn.CRMApp.Dtos.csproj" />
+  </ItemGroup>
+
 </Project>

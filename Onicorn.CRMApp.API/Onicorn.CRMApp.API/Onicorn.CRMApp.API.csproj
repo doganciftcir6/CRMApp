@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Onicorn.CRMApp.Business\Onicorn.CRMApp.Business.csproj" />
     <ProjectReference Include="..\Onicorn.CRMApp.DataAccess\Onicorn.CRMApp.DataAccess.csproj" />
   </ItemGroup>
 
