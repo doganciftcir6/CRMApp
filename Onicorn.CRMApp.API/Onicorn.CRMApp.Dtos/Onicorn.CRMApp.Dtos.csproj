@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AppUserDtos\" />
     <Folder Include="AppRoleDtos\" />
     <Folder Include="CustomerDtos\" />
     <Folder Include="CommunicationDtos\" />
