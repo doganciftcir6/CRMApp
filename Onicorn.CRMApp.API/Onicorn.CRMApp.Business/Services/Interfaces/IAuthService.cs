@@ -1,4 +1,5 @@
 ﻿using Onicorn.CRMApp.Dtos.AppUserDtos;
+using Onicorn.CRMApp.Shared.Utilities.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<bool> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto);
-        Task<bool> LoginAsync(AppUserLoginDto appUserLoginDto);
+        Task<CustomResponse<NoContent>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto);
+        Task<CustomResponse<NoContent>> LoginAsync(AppUserLoginDto appUserLoginDto);
     }
 }

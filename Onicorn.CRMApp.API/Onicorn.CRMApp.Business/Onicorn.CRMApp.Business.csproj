@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Onicorn.CRMApp.DataAccess\Onicorn.CRMApp.DataAccess.csproj" />
     <ProjectReference Include="..\Onicorn.CRMApp.Dtos\Onicorn.CRMApp.Dtos.csproj" />
+    <ProjectReference Include="..\Onicorn.CRMApp.Shared\Onicorn.CRMApp.Shared.csproj" />
   </ItemGroup>
 
 </Project>

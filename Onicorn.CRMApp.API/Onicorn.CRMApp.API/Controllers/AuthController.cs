@@ -19,21 +19,12 @@ namespace Onicorn.CRMApp.API.Controllers
         public async Task<IActionResult> Register(AppUserRegisterDto appUserRegisterDto)
         {
             var result = await _authService.RegisterWithRoleAsync(appUserRegisterDto);
-            if (!result)
-            {
-                return BadRequest("User eklenemedi");
-            }
-            return Ok("User eklendi");
+            return Ok();
         }
         [HttpPost("LoginUser")]
         public async Task<IActionResult> Login(AppUserLoginDto appUserLoginDto)
         {
-
             var result = await _authService.LoginAsync(appUserLoginDto);
-            if (!result)
-            {
-                return BadRequest("Login başarısız");
-            }
             return Ok("Login başarılı");
         }
     }
