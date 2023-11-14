@@ -68,7 +68,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
-        public async Task<CustomResponse<NoContent>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto)
+        public async Task<CustomResponse<string>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto)
         {
             var validationResult = _AppUserRegisterDtoValidator.Validate(appUserRegisterDto);
             if (validationResult.IsValid)
@@ -97,11 +97,11 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                     }
                     //register olan kullanıcıya default member rolünü ekle
                     await _userManager.AddToRoleAsync(appUser, "Member");
-                    return CustomResponse<NoContent>.Success(ResponseStatusCode.CREATED);
+                    return CustomResponse<string>.Success("User has been successfully created.", ResponseStatusCode.CREATED);
                 }
-                return CustomResponse<NoContent>.Fail(registerResult.Errors.Select(x => x.Description).ToList(), ResponseStatusCode.BAD_REQUEST);
+                return CustomResponse<string>.Fail(registerResult.Errors.Select(x => x.Description).ToList(), ResponseStatusCode.BAD_REQUEST);
             }
-            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
+            return CustomResponse<string>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
     }
 }

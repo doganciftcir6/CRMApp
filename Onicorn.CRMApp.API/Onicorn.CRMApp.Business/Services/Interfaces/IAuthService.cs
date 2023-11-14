@@ -10,7 +10,7 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<CustomResponse<NoContent>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto);
+        Task<CustomResponse<string>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto);
         Task<CustomResponse<NoContent>> LoginAsync(AppUserLoginDto appUserLoginDto);
     }
 }

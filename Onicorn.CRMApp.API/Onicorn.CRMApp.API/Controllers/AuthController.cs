@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
+using Onicorn.CRMApp.Shared.ControllerBases;
 
 namespace Onicorn.CRMApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : CustomBaseController
     {
         private readonly IAuthService _authService;
         public AuthController(IAuthService authService)
@@ -18,14 +19,14 @@ namespace Onicorn.CRMApp.API.Controllers
         [HttpPost("RegisterUser")]
         public async Task<IActionResult> Register(AppUserRegisterDto appUserRegisterDto)
         {
-            var result = await _authService.RegisterWithRoleAsync(appUserRegisterDto);
-            return Ok();
+            return CreateActionResultInstance(await _authService.RegisterWithRoleAsync(appUserRegisterDto));
+            ;
         }
         [HttpPost("LoginUser")]
         public async Task<IActionResult> Login(AppUserLoginDto appUserLoginDto)
         {
-            var result = await _authService.LoginAsync(appUserLoginDto);
-            return Ok("Login başarılı");
+            return CreateActionResultInstance(await _authService.LoginAsync(appUserLoginDto));
+
         }
     }
 }
