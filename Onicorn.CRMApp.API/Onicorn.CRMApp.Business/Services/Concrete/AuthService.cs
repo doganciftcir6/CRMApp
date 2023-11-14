@@ -15,10 +15,46 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
-        public AuthService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        private readonly SignInManager<AppUser> _signInManager;
+        public AuthService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
+        }
+
+        public async Task<bool> LoginAsync(AppUserLoginDto appUserLoginDto)
+        {
+            var user = await _userManager.FindByNameAsync(appUserLoginDto.UserName);
+            var signInResult = await _signInManager.PasswordSignInAsync(appUserLoginDto.UserName, appUserLoginDto.Password, appUserLoginDto.RememberMe, true);
+            if (signInResult.Succeeded)
+            {
+                return true;
+            }
+            else if (signInResult.IsLockedOut)
+            {
+                //ne zamana kadar kilitlendiğinin bilgisini almak yani locked zamanını ayarlamak.
+                //13.69 - 14.02 minutes
+                var lockOutEnd = await _userManager.GetLockoutEndDateAsync(user);
+                var message=  $"Hesabınız {(lockOutEnd.Value.UtcDateTime - DateTime.UtcNow).Minutes} dk süreyle askıya alınmıştır.";
+                return false;
+            }
+            else
+            {
+                //kaç kere hatalı giriş yapıldığının bilgisini çekelim.
+                var message = string.Empty;
+
+                if (user != null)
+                {
+                    var failedCount = await _userManager.GetAccessFailedCountAsync(user);
+                    message = $"{(_userManager.Options.Lockout.MaxFailedAccessAttempts - failedCount)} kez daha girerseniz hesabınız geçici olarak kilitlenecektir";
+                }
+                else
+                {
+                    message = "Kullanıcı adı ve şifre hatalı";
+                }
+                return false;
+            }
         }
 
         public async Task<bool> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto)
