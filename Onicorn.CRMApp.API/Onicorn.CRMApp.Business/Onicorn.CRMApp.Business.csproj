@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Onicorn.CRMApp.DataAccess\Onicorn.CRMApp.DataAccess.csproj" />
     <ProjectReference Include="..\Onicorn.CRMApp.Dtos\Onicorn.CRMApp.Dtos.csproj" />
   </ItemGroup>
