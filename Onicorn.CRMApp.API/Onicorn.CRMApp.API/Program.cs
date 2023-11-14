@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
+using Onicorn.CRMApp.DataAccess.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection"));
 });
+
+builder.Services.AddScoped<IUow, Uow>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
