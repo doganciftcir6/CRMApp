@@ -32,7 +32,16 @@ namespace Onicorn.CRMApp.Business.CustomDescriber
             return new()
             {
                 Code = "DuplicateUserName",
-                Description = "${userName} is already registered in the system."
+                Description = $"{userName} is already registered in the system."
+            };
+        }
+
+        public override IdentityError DuplicateEmail(string email)
+        {
+            return new()
+            {
+                Code = "DuplicateEmail",
+                Description = $"{email} is already registered in the system."
             };
         }
     }

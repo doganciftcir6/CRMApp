@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Onicorn.CRMApp.Business.CustomDescriber;
+using Onicorn.CRMApp.Business.Services.Concrete;
+using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Entities;
@@ -25,6 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 builder.Services.AddScoped<IUow, Uow>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -29,6 +29,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 Lastname = appUserRegisterDto.Lastname,
                 Email = appUserRegisterDto.Email,
                 UserName = appUserRegisterDto.Username,
+                PhoneNumber = appUserRegisterDto.PhoneNumber,
                 ImageURL = appUserRegisterDto.ImageURL,
                 GenderId = appUserRegisterDto.GenderId,
             };
