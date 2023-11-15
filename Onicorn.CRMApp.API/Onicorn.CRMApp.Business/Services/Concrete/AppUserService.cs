@@ -24,14 +24,37 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly ISharedIdentityService _sharedIdentityService;
         private readonly IMapper _mapper;
         private readonly IValidator<UpdateAppUserDto> _updateAppUserValidator;
+        private readonly IValidator<AppUserChangePasswordDto> _changePasswordValidator;
         private readonly IHostingEnvironment _hostingEnvironment;
-        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment)
+        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment, IValidator<AppUserChangePasswordDto> changePasswordValidator)
         {
             _userManager = userManager;
             _sharedIdentityService = sharedIdentityService;
             _mapper = mapper;
             _updateAppUserValidator = updateAppUserValidator;
             _hostingEnvironment = hostingEnvironment;
+            _changePasswordValidator = changePasswordValidator;
+        }
+
+        public async Task<CustomResponse<NoContent>> ChangePasswordAsync(AppUserChangePasswordDto appUserChangePassword)
+        {
+            var validationResult = _changePasswordValidator.Validate(appUserChangePassword);
+            if (validationResult.IsValid)
+            {
+                var currentUser = await _userManager.FindByIdAsync(_sharedIdentityService.GetUserId.ToString());
+                if (currentUser != null)
+                {
+                    var checkPassword = await _userManager.CheckPasswordAsync(currentUser, appUserChangePassword.CurrentPassword);
+                    if (checkPassword)
+                    {
+                        await _userManager.ChangePasswordAsync(currentUser, appUserChangePassword.CurrentPassword, appUserChangePassword.NewPassword);
+                        return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+                    }
+                    return CustomResponse<NoContent>.Fail("Wrong current password!", ResponseStatusCode.BAD_REQUEST);
+                }
+                return CustomResponse<NoContent>.Fail("User not found", ResponseStatusCode.NOT_FOUND);
+            }
+            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
         public async Task<CustomResponse<AppUserDto>> GetProfileAsync()
