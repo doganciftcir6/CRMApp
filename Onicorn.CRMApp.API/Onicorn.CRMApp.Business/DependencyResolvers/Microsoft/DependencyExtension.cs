@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Onicorn.CRMApp.Business.CustomDescriber;
 using Onicorn.CRMApp.Business.Services.Concrete;
@@ -13,6 +15,7 @@ using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Security.JWT;
+using Onicorn.CRMApp.Shared.Utilities.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +48,10 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
 
             //Scopes,Singletons,Transients
             services.AddScoped<IUow, Uow>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<ISharedIdentityService, SharedIdentityService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAppUserService, AppUserService>();
             //FluentValidations
             services.AddScoped<IValidator<AppUserRegisterDto>, AppUserRegisterDtoValidator>();
             services.AddScoped<IValidator<AppUserLoginDto>, AppUserLoginDtoValidator>();
