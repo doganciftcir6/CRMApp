@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Onicorn.CRMApp.Business.CustomDescriber;
 using Onicorn.CRMApp.Business.Services.Concrete;
 using Onicorn.CRMApp.Business.Services.Interfaces;
@@ -10,6 +12,7 @@ using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
 using Onicorn.CRMApp.Entities;
+using Onicorn.CRMApp.Shared.Utilities.Security.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +51,21 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<IValidator<AppUserLoginDto>, AppUserLoginDtoValidator>();
             //AutoMapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            //JWT register (Auto şema)
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+            {
+                opt.RequireHttpsMetadata = false;
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudience = JwtTokenDefaults.ValidAudience,
+                    ValidateIssuer = true,
+                    ClockSkew = TimeSpan.Zero,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                };
+            });
         }
     }
 }

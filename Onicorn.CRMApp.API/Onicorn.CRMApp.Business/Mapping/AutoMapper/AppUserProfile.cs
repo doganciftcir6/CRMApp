@@ -15,6 +15,7 @@ namespace Onicorn.CRMApp.Business.Mapping.AutoMapper
         {
             CreateMap<AppUser, AppUserRegisterDto>().ReverseMap();
             CreateMap<AppUser, AppUserLoginDto>().ReverseMap();
+            CreateMap<AppUser, AppUserDto>().ReverseMap();
         }
     }
 }

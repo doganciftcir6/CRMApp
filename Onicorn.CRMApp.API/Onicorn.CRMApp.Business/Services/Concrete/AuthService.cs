@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
+using Onicorn.CRMApp.Dtos.TokenDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Response;
+using Onicorn.CRMApp.Shared.Utilities.Security.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,16 +34,19 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<CustomResponse<NoContent>> LoginAsync(AppUserLoginDto appUserLoginDto)
+        public async Task<CustomResponse<TokenResponseDto>> LoginAsync(AppUserLoginDto appUserLoginDto)
         {
             var validationResult = _AppUserLoginDtoValidator.Validate(appUserLoginDto);
             if (validationResult.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(appUserLoginDto.UserName);
+                AppUser user = await _userManager.FindByNameAsync(appUserLoginDto.UserName);
+                AppUserDto appUserDto = _mapper.Map<AppUserDto>(user);
+                var roles = await _userManager.GetRolesAsync(user);
                 var signInResult = await _signInManager.PasswordSignInAsync(appUserLoginDto.UserName, appUserLoginDto.Password, appUserLoginDto.RememberMe, true);
                 if (signInResult.Succeeded)
                 {
-                    return CustomResponse<NoContent>.Success(ResponseStatusCode.CREATED);
+                    var token = JwtTokenGenerator.GenerateToken(appUserDto, roles);
+                    return CustomResponse<TokenResponseDto>.Success(token, ResponseStatusCode.OK);
                 }
                 else if (signInResult.IsLockedOut)
                 {
@@ -49,7 +54,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                     //13.69 - 14.02 minutes
                     var lockOutEnd = await _userManager.GetLockoutEndDateAsync(user);
                     var message = $"Your account has been suspended for {(lockOutEnd.Value.UtcDateTime - DateTime.UtcNow).Minutes} minutes.";
-                    return CustomResponse<NoContent>.Fail(message, ResponseStatusCode.BAD_REQUEST);
+                    return CustomResponse<TokenResponseDto>.Fail(message, ResponseStatusCode.BAD_REQUEST);
                 }
                 else
                 {
@@ -65,10 +70,10 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                     {
                         message = "Invalid username or password!";
                     }
-                    return CustomResponse<NoContent>.Fail(message, ResponseStatusCode.BAD_REQUEST);
+                    return CustomResponse<TokenResponseDto>.Fail(message, ResponseStatusCode.BAD_REQUEST);
                 }
             }
-            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
+            return CustomResponse<TokenResponseDto>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
         public async Task<CustomResponse<string>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto)

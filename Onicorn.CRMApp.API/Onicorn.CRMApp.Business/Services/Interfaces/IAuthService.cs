@@ -1,4 +1,5 @@
 ﻿using Onicorn.CRMApp.Dtos.AppUserDtos;
+using Onicorn.CRMApp.Dtos.TokenDtos;
 using Onicorn.CRMApp.Shared.Utilities.Response;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
     public interface IAuthService
     {
         Task<CustomResponse<string>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto);
-        Task<CustomResponse<NoContent>> LoginAsync(AppUserLoginDto appUserLoginDto);
+        Task<CustomResponse<TokenResponseDto>> LoginAsync(AppUserLoginDto appUserLoginDto);
     }
 }

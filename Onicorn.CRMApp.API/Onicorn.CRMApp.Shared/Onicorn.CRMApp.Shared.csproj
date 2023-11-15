@@ -8,5 +8,12 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.24.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Onicorn.CRMApp.Dtos\Onicorn.CRMApp.Dtos.csproj" />
+	  <ProjectReference Include="..\Onicorn.CRMApp.Entities\Onicorn.CRMApp.Entities.csproj" />
+	</ItemGroup>
 
 </Project>
