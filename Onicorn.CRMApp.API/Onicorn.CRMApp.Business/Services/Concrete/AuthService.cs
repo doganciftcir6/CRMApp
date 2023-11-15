@@ -40,38 +40,18 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             if (validationResult.IsValid)
             {
                 AppUser user = await _userManager.FindByNameAsync(appUserLoginDto.UserName);
-                AppUserDto appUserDto = _mapper.Map<AppUserDto>(user);
-                var roles = await _userManager.GetRolesAsync(user);
-                var signInResult = await _signInManager.PasswordSignInAsync(appUserLoginDto.UserName, appUserLoginDto.Password, appUserLoginDto.RememberMe, true);
-                if (signInResult.Succeeded)
+                if (user != null)
                 {
-                    var token = JwtTokenGenerator.GenerateToken(appUserDto, roles);
-                    return CustomResponse<TokenResponseDto>.Success(token, ResponseStatusCode.OK);
-                }
-                else if (signInResult.IsLockedOut)
-                {
-                    //ne zamana kadar kilitlendiğinin bilgisini almak yani locked zamanını ayarlamak.
-                    //13.69 - 14.02 minutes
-                    var lockOutEnd = await _userManager.GetLockoutEndDateAsync(user);
-                    var message = $"Your account has been suspended for {(lockOutEnd.Value.UtcDateTime - DateTime.UtcNow).Minutes} minutes.";
-                    return CustomResponse<TokenResponseDto>.Fail(message, ResponseStatusCode.BAD_REQUEST);
-                }
-                else
-                {
-                    //kaç kere hatalı giriş yapıldığının bilgisini çekelim.
-                    var message = string.Empty;
-
-                    if (user != null)
+                    var checkPassword = await _userManager.CheckPasswordAsync(user, appUserLoginDto.Password);
+                    if (checkPassword)
                     {
-                        var failedCount = await _userManager.GetAccessFailedCountAsync(user);
-                        message = $"If you fail {_userManager.Options.Lockout.MaxFailedAccessAttempts - failedCount} more times, your account will be temporarily locked.";
+                        var roles = await _userManager.GetRolesAsync(user);
+                        AppUserDto appUserDto = _mapper.Map<AppUserDto>(user);
+                        var token = JwtTokenGenerator.GenerateToken(appUserDto, roles);
+                        return CustomResponse<TokenResponseDto>.Success(token, ResponseStatusCode.OK);
                     }
-                    else
-                    {
-                        message = "Invalid username or password!";
-                    }
-                    return CustomResponse<TokenResponseDto>.Fail(message, ResponseStatusCode.BAD_REQUEST);
                 }
+                return CustomResponse<TokenResponseDto>.Fail("Email or password is incorrect", ResponseStatusCode.BAD_REQUEST);
             }
             return CustomResponse<TokenResponseDto>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }

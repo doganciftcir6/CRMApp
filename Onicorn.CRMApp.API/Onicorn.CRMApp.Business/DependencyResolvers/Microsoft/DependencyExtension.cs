@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Onicorn.CRMApp.Business.CustomDescriber;
 using Onicorn.CRMApp.Business.Services.Concrete;
@@ -60,19 +61,27 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             //JWT register (Auto şema)
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(opt =>
             {
                 opt.RequireHttpsMetadata = false;
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidAudience = JwtTokenDefaults.ValidAudience,
+                    ValidateAudience = true,
                     ValidateIssuer = true,
-                    ClockSkew = TimeSpan.Zero,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
                     ValidateIssuerSigningKey = true,
                     ValidateLifetime = true,
+                    ValidIssuer = JwtTokenDefaults.ValidIssuer,
+                    ValidAudience = JwtTokenDefaults.ValidAudience,
+                    ClockSkew = TimeSpan.Zero,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
                 };
             });
+
         }
     }
 }

@@ -16,6 +16,13 @@ namespace Onicorn.CRMApp.Shared.Utilities.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public int GetUserId => int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        public int? GetUserId
+        {
+            get
+            {
+                var nameIdentifierClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+                return nameIdentifierClaim != null ? int.Parse(nameIdentifierClaim.Value) : (int?)null;
+            }
+        }
     }
 }

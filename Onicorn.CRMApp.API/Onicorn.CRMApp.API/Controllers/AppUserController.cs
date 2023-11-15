@@ -18,6 +18,7 @@ namespace Onicorn.CRMApp.API.Controllers
             _appUserService = appUserService;
         }
 
+
         [HttpGet("[action]")]
         public async Task<IActionResult> GetProfile()
         {

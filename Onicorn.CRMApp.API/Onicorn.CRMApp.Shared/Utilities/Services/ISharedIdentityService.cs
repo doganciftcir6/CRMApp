@@ -8,6 +8,6 @@ namespace Onicorn.CRMApp.Shared.Utilities.Services
 {
     public interface ISharedIdentityService
     {
-        public int GetUserId { get; }
+        int? GetUserId { get; }
     }
 }
