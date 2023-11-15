@@ -55,6 +55,7 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             //FluentValidations
             services.AddScoped<IValidator<AppUserRegisterDto>, AppUserRegisterDtoValidator>();
             services.AddScoped<IValidator<AppUserLoginDto>, AppUserLoginDtoValidator>();
+            services.AddScoped<IValidator<UpdateAppUserDto>, UpdateAppUserDtoValidator>();
             //AutoMapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
