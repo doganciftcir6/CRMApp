@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Onicorn.CRMApp.Dtos.AppUserDtos
         public string? Username { get; set; }
         public string? Password { get; set; }
         public string? ConfirmPassword { get; set; }
-        public string? ImageURL { get; set; }
+        public IFormFile? ImageURL { get; set; }
 
         public int GenderId { get; set; }
     }

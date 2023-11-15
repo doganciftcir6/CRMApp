@@ -25,9 +25,9 @@ namespace Onicorn.CRMApp.API.Controllers
             return CreateActionResultInstance(await _appUserService.GetProfileAsync());
         }
         [HttpPut("[action]")]
-        public async Task<IActionResult> UpdateProfile(UpdateAppUserDto updateAppUserDto)
+        public async Task<IActionResult> UpdateProfile([FromForm]UpdateAppUserDto updateAppUserDto, CancellationToken cancellationToken)
         {
-            return CreateActionResultInstance(await _appUserService.UpdateProfileAsync(updateAppUserDto));
+            return CreateActionResultInstance(await _appUserService.UpdateProfileAsync(updateAppUserDto, cancellationToken));
         }
     }
 }

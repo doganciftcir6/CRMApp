@@ -17,9 +17,9 @@ namespace Onicorn.CRMApp.API.Controllers
         }
 
         [HttpPost("RegisterUser")]
-        public async Task<IActionResult> Register(AppUserRegisterDto appUserRegisterDto)
+        public async Task<IActionResult> Register([FromForm]AppUserRegisterDto appUserRegisterDto, CancellationToken cancellationToken)
         {
-            return CreateActionResultInstance(await _authService.RegisterWithRoleAsync(appUserRegisterDto));
+            return CreateActionResultInstance(await _authService.RegisterWithRoleAsync(appUserRegisterDto, cancellationToken));
             ;
         }
         [HttpPost("LoginUser")]

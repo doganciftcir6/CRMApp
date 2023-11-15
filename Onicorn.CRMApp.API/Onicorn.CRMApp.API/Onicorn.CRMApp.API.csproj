@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Onicorn.CRMApp.DataAccess\Onicorn.CRMApp.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\UserImages\" />
+  </ItemGroup>
+
 </Project>

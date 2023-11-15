@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
 using Onicorn.CRMApp.Dtos.TokenDtos;
@@ -22,12 +24,14 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly ISharedIdentityService _sharedIdentityService;
         private readonly IMapper _mapper;
         private readonly IValidator<UpdateAppUserDto> _updateAppUserValidator;
-        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator)
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment)
         {
             _userManager = userManager;
             _sharedIdentityService = sharedIdentityService;
             _mapper = mapper;
             _updateAppUserValidator = updateAppUserValidator;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public async Task<CustomResponse<AppUserDto>> GetProfileAsync()
@@ -41,15 +45,26 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             return CustomResponse<AppUserDto>.Fail("User not found!", ResponseStatusCode.NOT_FOUND);
         }
 
-        public async Task<CustomResponse<NoContent>> UpdateProfileAsync(UpdateAppUserDto updateAppUserDto)
+        public async Task<CustomResponse<NoContent>> UpdateProfileAsync(UpdateAppUserDto updateAppUserDto, CancellationToken cancellationToken)
         {
             var validationResult = _updateAppUserValidator.Validate(updateAppUserDto);
             if (validationResult.IsValid)
             {
                 var appUser = await _userManager.FindByIdAsync(_sharedIdentityService.GetUserId.ToString());
+                var oldImage = appUser.ImageURL;
                 if (appUser != null)
                 {
                     _mapper.Map(updateAppUserDto, appUser);
+
+                    if (updateAppUserDto.ImageURL != null && updateAppUserDto.ImageURL.Length > 0)
+                    {
+                        await AppUserImageUploadHelper.Run(_hostingEnvironment, updateAppUserDto.ImageURL, cancellationToken);
+                        appUser.ImageURL = Path.GetFileNameWithoutExtension(updateAppUserDto.ImageURL.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(updateAppUserDto.ImageURL.FileName);
+                    }
+                    else
+                    {
+                        appUser.ImageURL = oldImage;
+                    }
 
                     var updateResult = await _userManager.UpdateAsync(appUser);
 

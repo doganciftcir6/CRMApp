@@ -11,6 +11,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
     public interface IAppUserService
     {
         Task<CustomResponse<AppUserDto>> GetProfileAsync();
-        Task<CustomResponse<NoContent>> UpdateProfileAsync(UpdateAppUserDto updateAppUserDto);
+        Task<CustomResponse<NoContent>> UpdateProfileAsync(UpdateAppUserDto updateAppUserDto, CancellationToken cancellationToken);
     }
 }

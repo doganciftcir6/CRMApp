@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
@@ -20,18 +22,18 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
-        private readonly SignInManager<AppUser> _signInManager;
         private readonly IValidator<AppUserRegisterDto> _AppUserRegisterDtoValidator;
         private readonly IValidator<AppUserLoginDto> _AppUserLoginDtoValidator;
         private readonly IMapper _mapper;
-        public AuthService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager, IValidator<AppUserRegisterDto> appUserRegisterDtoValidator, IValidator<AppUserLoginDto> appUserLoginDtoValidator, IMapper mapper)
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public AuthService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IValidator<AppUserRegisterDto> appUserRegisterDtoValidator, IValidator<AppUserLoginDto> appUserLoginDtoValidator, IMapper mapper, IHostingEnvironment hostingEnvironment)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _signInManager = signInManager;
             _AppUserRegisterDtoValidator = appUserRegisterDtoValidator;
             _AppUserLoginDtoValidator = appUserLoginDtoValidator;
             _mapper = mapper;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public async Task<CustomResponse<TokenResponseDto>> LoginAsync(AppUserLoginDto appUserLoginDto)
@@ -56,12 +58,18 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             return CustomResponse<TokenResponseDto>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
-        public async Task<CustomResponse<string>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto)
+        public async Task<CustomResponse<string>> RegisterWithRoleAsync(AppUserRegisterDto appUserRegisterDto, CancellationToken cancellationToken)
         {
             var validationResult = _AppUserRegisterDtoValidator.Validate(appUserRegisterDto);
             if (validationResult.IsValid)
             {
+                if(appUserRegisterDto.ImageURL != null && appUserRegisterDto.ImageURL.Length > 0)
+                {
+                    await AppUserImageUploadHelper.Run(_hostingEnvironment, appUserRegisterDto.ImageURL, cancellationToken);
+                }
+
                 var appUser = _mapper.Map<AppUser>(appUserRegisterDto);
+                appUser.ImageURL = Path.GetFileNameWithoutExtension(appUserRegisterDto.ImageURL.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(appUserRegisterDto.ImageURL.FileName);
                 var registerResult = await _userManager.CreateAsync(appUser, appUserRegisterDto.Password);
                 if (registerResult.Succeeded)
                 {
