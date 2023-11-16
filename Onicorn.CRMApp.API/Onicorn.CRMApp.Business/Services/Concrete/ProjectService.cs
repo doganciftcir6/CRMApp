@@ -21,13 +21,15 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly IProjectRepository _projectRepository;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IValidator<ProjectCreateDto> _projectCreateDtoValidator;
-        public ProjectService(IMapper mapper, IUow uow, IProjectRepository projectRepository, IValidator<ProjectCreateDto> projectCreateDtoValidator, IHostingEnvironment hostingEnvironment)
+        private readonly IValidator<ProjectUpdateDto> _projectUpdateDtoValidator;
+        public ProjectService(IMapper mapper, IUow uow, IProjectRepository projectRepository, IValidator<ProjectCreateDto> projectCreateDtoValidator, IHostingEnvironment hostingEnvironment, IValidator<ProjectUpdateDto> projectUpdateDtoValidator)
         {
             _mapper = mapper;
             _uow = uow;
             _projectRepository = projectRepository;
             _projectCreateDtoValidator = projectCreateDtoValidator;
             _hostingEnvironment = hostingEnvironment;
+            _projectUpdateDtoValidator = projectUpdateDtoValidator;
         }
 
         public async Task<CustomResponse<ProjectDto>> GetProjectAsync(int projectId)
@@ -63,6 +65,34 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 await _uow.GetRepository<Project>().InsertAsync(project);
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.CREATED);
+            }
+            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
+        }
+
+        public async Task<CustomResponse<NoContent>> UpdateProjectAsync(ProjectUpdateDto projectUpdateDto, CancellationToken cancellationToken)
+        {
+            var validationResult = _projectUpdateDtoValidator.Validate(projectUpdateDto);
+            if (validationResult.IsValid)
+            {
+                Project oldData = await _uow.GetRepository<Project>().AsNoTrackingGetByFilterAsync(x => x.Id == projectUpdateDto.Id);
+                if (oldData == null)
+                    return CustomResponse<NoContent>.Fail("Project not found", ResponseStatusCode.NOT_FOUND);
+
+                Project project = _mapper.Map<Project>(projectUpdateDto);
+                if (projectUpdateDto.ImageURL != null && projectUpdateDto.ImageURL.Length > 0)
+                {
+                    await ProjectImageUploadHelper.Run(_hostingEnvironment, projectUpdateDto.ImageURL, cancellationToken);
+                    project.ImageURL = Path.GetFileNameWithoutExtension(projectUpdateDto.ImageURL.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(projectUpdateDto.ImageURL.FileName);
+                }
+                else
+                {
+                    project.ImageURL = oldData.ImageURL;
+                }
+                project.UpdateTime = DateTime.UtcNow;
+                project.InsertTime = oldData.InsertTime;
+                _uow.GetRepository<Project>().Update(project);
+                await _uow.SaveChangesAsync();
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }

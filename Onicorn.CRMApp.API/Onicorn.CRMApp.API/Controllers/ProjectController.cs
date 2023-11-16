@@ -29,9 +29,15 @@ namespace Onicorn.CRMApp.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> InsertProject([FromForm]ProjectCreateDto projectCreateDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> InsertProject([FromForm] ProjectCreateDto projectCreateDto, CancellationToken cancellationToken)
         {
             return CreateActionResultInstance(await _projectService.InsertProjectAsync(projectCreateDto, cancellationToken));
+        }
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateProject([FromForm] ProjectUpdateDto projectUpdateDto, CancellationToken cancellationToken)
+        {
+            return CreateActionResultInstance(await _projectService.UpdateProjectAsync(projectUpdateDto, cancellationToken));
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Onicorn.CRMApp.Business.Mapping.AutoMapper
             CreateMap<Project, ProjectsDto>().ReverseMap();
             CreateMap<Project, ProjectDto>().ReverseMap();
             CreateMap<Project, ProjectCreateDto>().ReverseMap();
+            CreateMap<Project, ProjectUpdateDto>().ReverseMap();
         }
     }
 }

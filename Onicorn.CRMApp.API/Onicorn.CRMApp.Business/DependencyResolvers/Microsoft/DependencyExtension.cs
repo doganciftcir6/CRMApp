@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Onicorn.CRMApp.Business.CustomDescriber;
 using Onicorn.CRMApp.Business.Services.Concrete;
@@ -25,12 +24,8 @@ using Onicorn.CRMApp.Dtos.ProjectDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Security.JWT;
 using Onicorn.CRMApp.Shared.Utilities.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
 {
@@ -78,6 +73,7 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateDtoValidator>();
             services.AddScoped<IValidator<CustomerUpdateDto>, CustomerUpdateDtoValidator>();
             services.AddScoped<IValidator<ProjectCreateDto>, ProjectCreateDtoValidator>();
+            services.AddScoped<IValidator<ProjectUpdateDto>, ProjectUpdateDtoValidator>();
             //AutoMapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
