@@ -3,11 +3,8 @@ using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
-using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.CustomerValidations;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
-using Onicorn.CRMApp.Dtos.AppUserDtos;
-using Onicorn.CRMApp.Dtos.CustomerDtos;
 using Onicorn.CRMApp.Dtos.ProjectDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Response;
@@ -57,16 +54,34 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 Project project = _mapper.Map<Project>(projectCreateDto);
                 if (projectCreateDto.ImageURL != null && projectCreateDto.ImageURL.Length > 0)
                 {
-                    await ProjectImageUploadHelper.Run(_hostingEnvironment, projectCreateDto.ImageURL, cancellationToken);
+                    string createdFileName = await ProjectImageUploadHelper.Run(_hostingEnvironment, projectCreateDto.ImageURL, cancellationToken);
+                    project.ImageURL = createdFileName;
                 }
                 project.InsertTime = DateTime.UtcNow;
                 project.Status = true;
-                project.ImageURL = Path.GetFileNameWithoutExtension(projectCreateDto.ImageURL.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(projectCreateDto.ImageURL.FileName);
                 await _uow.GetRepository<Project>().InsertAsync(project);
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.CREATED);
             }
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
+        }
+
+        public async Task<CustomResponse<NoContent>> RemoveProjectAsync(int projectId)
+        {
+            Project project = await _uow.GetRepository<Project>().GetByIdAsync(projectId);
+            if (project != null)
+            {
+                project.Status = false;
+                _uow.GetRepository<Project>().Update(project);
+                if (project.ImageURL != null && project.ImageURL.Length != 0)
+                {
+                    ProjectImageDeleteHelper.Delete(_hostingEnvironment, project.ImageURL);
+                    project.ImageURL = null;
+                }
+                await _uow.SaveChangesAsync();
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+            }
+            return CustomResponse<NoContent>.Fail("Project not found", ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> UpdateProjectAsync(ProjectUpdateDto projectUpdateDto, CancellationToken cancellationToken)
@@ -81,8 +96,8 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 Project project = _mapper.Map<Project>(projectUpdateDto);
                 if (projectUpdateDto.ImageURL != null && projectUpdateDto.ImageURL.Length > 0)
                 {
-                    await ProjectImageUploadHelper.Run(_hostingEnvironment, projectUpdateDto.ImageURL, cancellationToken);
-                    project.ImageURL = Path.GetFileNameWithoutExtension(projectUpdateDto.ImageURL.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(projectUpdateDto.ImageURL.FileName);
+                    string createdFileName = await ProjectImageUploadHelper.Run(_hostingEnvironment, projectUpdateDto.ImageURL, cancellationToken);
+                    project.ImageURL = createdFileName;
                 }
                 else
                 {

@@ -9,5 +9,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
         Task<CustomResponse<ProjectDto>> GetProjectAsync(int projectId);
         Task<CustomResponse<NoContent>> InsertProjectAsync(ProjectCreateDto projectCreateDto, CancellationToken cancellationToken);
         Task<CustomResponse<NoContent>> UpdateProjectAsync(ProjectUpdateDto projectUpdateDto, CancellationToken cancellationToken);
+        Task<CustomResponse<NoContent>> RemoveProjectAsync(int projectId);
     }
 }

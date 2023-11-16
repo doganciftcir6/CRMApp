@@ -11,16 +11,16 @@ namespace Onicorn.CRMApp.Business.Helpers.UploadHelpers
 {
     public static class AppUserImageUploadHelper
     {
-        public static async Task Run(IHostingEnvironment hostingEnvironment, IFormFile file, CancellationToken cancellationToken)
+        public static async Task<string> Run(IHostingEnvironment hostingEnvironment, IFormFile file, CancellationToken cancellationToken)
         {
-            var fileName = Path.GetFileNameWithoutExtension(file.FileName) + DateTime.UtcNow.Minute + DateTime.UtcNow.Second;
-            var extName = Path.GetExtension(file.FileName);
-            string path = Path.Combine(hostingEnvironment.WebRootPath, "UserImages", fileName + extName);
+            var fileName = Path.GetFileNameWithoutExtension(file.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName);
+            string path = Path.Combine(hostingEnvironment.WebRootPath, "UserImages", fileName);
             using (var stream = new FileStream(path, FileMode.Create))
             {
                 await file.CopyToAsync(stream, cancellationToken);
                 stream.Close();
             }
+            return fileName;
         }
     }
 }

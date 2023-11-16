@@ -6,15 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
-using Onicorn.CRMApp.Dtos.TokenDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Response;
 using Onicorn.CRMApp.Shared.Utilities.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Onicorn.CRMApp.Business.Services.Concrete
 {
@@ -137,8 +131,8 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
 
                     if (updateAppUserDto.ImageURL != null && updateAppUserDto.ImageURL.Length > 0)
                     {
-                        await AppUserImageUploadHelper.Run(_hostingEnvironment, updateAppUserDto.ImageURL, cancellationToken);
-                        appUser.ImageURL = Path.GetFileNameWithoutExtension(updateAppUserDto.ImageURL.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(updateAppUserDto.ImageURL.FileName);
+                        string createdFileName = await AppUserImageUploadHelper.Run(_hostingEnvironment, updateAppUserDto.ImageURL, cancellationToken);
+                        appUser.ImageURL = createdFileName;
                     }
                     else
                     {

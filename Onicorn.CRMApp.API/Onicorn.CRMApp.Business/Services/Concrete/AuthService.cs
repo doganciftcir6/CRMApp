@@ -4,17 +4,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
-using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
 using Onicorn.CRMApp.Dtos.TokenDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Response;
 using Onicorn.CRMApp.Shared.Utilities.Security.JWT;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Onicorn.CRMApp.Business.Services.Concrete
 {
@@ -63,13 +57,13 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             var validationResult = _AppUserRegisterDtoValidator.Validate(appUserRegisterDto);
             if (validationResult.IsValid)
             {
+                var appUser = _mapper.Map<AppUser>(appUserRegisterDto);
                 if (appUserRegisterDto.ImageURL != null && appUserRegisterDto.ImageURL.Length > 0)
                 {
-                    await AppUserImageUploadHelper.Run(_hostingEnvironment, appUserRegisterDto.ImageURL, cancellationToken);
+                    string createdFileName = await AppUserImageUploadHelper.Run(_hostingEnvironment, appUserRegisterDto.ImageURL, cancellationToken);
+                    appUser.ImageURL = createdFileName;
                 }
-                var appUser = _mapper.Map<AppUser>(appUserRegisterDto);
 
-                appUser.ImageURL = Path.GetFileNameWithoutExtension(appUserRegisterDto.ImageURL.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(appUserRegisterDto.ImageURL.FileName);
                 var registerResult = await _userManager.CreateAsync(appUser, appUserRegisterDto.Password);
                 if (registerResult.Succeeded)
                 {
