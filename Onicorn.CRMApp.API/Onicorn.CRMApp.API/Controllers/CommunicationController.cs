@@ -18,6 +18,7 @@ namespace Onicorn.CRMApp.API.Controllers
             _communicationService = communicationService;
         }
 
+        [Authorize]
         [HttpGet("[action]")]
         public async Task<IActionResult> GetCommunications()
         {

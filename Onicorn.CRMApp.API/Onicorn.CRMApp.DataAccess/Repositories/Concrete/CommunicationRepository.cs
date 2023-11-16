@@ -19,7 +19,7 @@ namespace Onicorn.CRMApp.DataAccess.Repositories.Concrete
 
         public async override Task<IEnumerable<Communication>> GetAllAsync()
         {
-            return await _appDbContext.Set<Communication>().Include(x => x.CommunicationType).Include(x => x.Customer).Where(x => x.Status == true).ToListAsync();
+            return await _appDbContext.Set<Communication>().Include(x => x.CommunicationType).Include(x => x.Customer).Where(x => x.Status == true).OrderByDescending(x => x.InsertTime).ToListAsync();
         }
     }
 }

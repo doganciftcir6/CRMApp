@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="AppRoleDtos\" />
-    <Folder Include="CustomerDtos\" />
     <Folder Include="TaskDtos\" />
     <Folder Include="SaleDtos\" />
     <Folder Include="ProjectDtos\" />

@@ -58,6 +58,7 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<ICommunicationService, CommunicationService>();
+            services.AddScoped<ICustomerService, CustomerService>();
 
             services.AddScoped<ICommunicationRepository, CommunicationRepository>();
             //FluentValidations
