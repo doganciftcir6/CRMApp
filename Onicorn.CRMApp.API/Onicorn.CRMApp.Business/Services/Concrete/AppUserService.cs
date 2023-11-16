@@ -21,12 +21,13 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
     public class AppUserService : IAppUserService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<AppRole> _roleManager;
         private readonly ISharedIdentityService _sharedIdentityService;
         private readonly IMapper _mapper;
         private readonly IValidator<UpdateAppUserDto> _updateAppUserValidator;
         private readonly IValidator<AppUserChangePasswordDto> _changePasswordValidator;
         private readonly IHostingEnvironment _hostingEnvironment;
-        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment, IValidator<AppUserChangePasswordDto> changePasswordValidator)
+        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment, IValidator<AppUserChangePasswordDto> changePasswordValidator, RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
             _sharedIdentityService = sharedIdentityService;
@@ -34,6 +35,12 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _updateAppUserValidator = updateAppUserValidator;
             _hostingEnvironment = hostingEnvironment;
             _changePasswordValidator = changePasswordValidator;
+            _roleManager = roleManager;
+        }
+
+        public Task<CustomResponse<NoContent>> AssingRoleAsync(RoleAssingSendDto roleAssingSendDto)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<CustomResponse<NoContent>> ChangePasswordAsync(AppUserChangePasswordDto appUserChangePassword)
@@ -66,6 +73,31 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 return CustomResponse<AppUserDto>.Success(appUserDto, ResponseStatusCode.OK);
             }
             return CustomResponse<AppUserDto>.Fail("User not found!", ResponseStatusCode.NOT_FOUND);
+        }
+
+        public async Task<CustomResponse<List<RoleDto>>> GetRolesAsync()
+        {
+            var currentUser = await _userManager.FindByIdAsync(_sharedIdentityService.GetUserId.ToString());
+            if (currentUser != null)
+            {
+                var roleAssingDtos = new List<RoleDto>();
+                var userRoles = await _userManager.GetRolesAsync(currentUser);
+
+                foreach (var roleName in userRoles)
+                {
+                    var role = await _roleManager.FindByNameAsync(roleName);
+                    if (role != null)
+                    {
+                        roleAssingDtos.Add(new()
+                        {
+                            RoleId = role.Id,
+                            Name = role.Name,
+                        });
+                    }
+                }
+                return CustomResponse<List<RoleDto>>.Success(roleAssingDtos, ResponseStatusCode.OK);
+            }
+            return CustomResponse<List<RoleDto>>.Fail("User not found!", ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> UpdateProfileAsync(UpdateAppUserDto updateAppUserDto, CancellationToken cancellationToken)

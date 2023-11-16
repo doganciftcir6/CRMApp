@@ -13,5 +13,7 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
         Task<CustomResponse<AppUserDto>> GetProfileAsync();
         Task<CustomResponse<NoContent>> UpdateProfileAsync(UpdateAppUserDto updateAppUserDto, CancellationToken cancellationToken);
         Task<CustomResponse<NoContent>> ChangePasswordAsync(AppUserChangePasswordDto appUserChangePassword);
+        Task<CustomResponse<List<RoleDto>>> GetRolesAsync();
+        Task<CustomResponse<NoContent>> AssingRoleAsync(RoleAssingSendDto roleAssingSendDto);
     }
 }
