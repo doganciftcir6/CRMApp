@@ -26,8 +26,9 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly IMapper _mapper;
         private readonly IValidator<UpdateAppUserDto> _updateAppUserValidator;
         private readonly IValidator<AppUserChangePasswordDto> _changePasswordValidator;
+        private readonly IValidator<RoleAssingSendDto> _roleAssingSendDto;
         private readonly IHostingEnvironment _hostingEnvironment;
-        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment, IValidator<AppUserChangePasswordDto> changePasswordValidator, RoleManager<AppRole> roleManager)
+        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment, IValidator<AppUserChangePasswordDto> changePasswordValidator, RoleManager<AppRole> roleManager, IValidator<RoleAssingSendDto> roleAssingSendDto)
         {
             _userManager = userManager;
             _sharedIdentityService = sharedIdentityService;
@@ -36,28 +37,34 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _hostingEnvironment = hostingEnvironment;
             _changePasswordValidator = changePasswordValidator;
             _roleManager = roleManager;
+            _roleAssingSendDto = roleAssingSendDto;
         }
 
         public async Task<CustomResponse<NoContent>> AssingRoleAsync(RoleAssingSendDto roleAssingSendDto)
         {
-            var currentUser = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == roleAssingSendDto.UserId);
-            if (currentUser != null)
+            var validationResult = _roleAssingSendDto.Validate(roleAssingSendDto);
+            if (validationResult.IsValid)
             {
-                var currentRole = await _roleManager.FindByNameAsync(roleAssingSendDto.RoleName);
-                if (currentRole == null)
-                    return CustomResponse<NoContent>.Fail("Role not found", ResponseStatusCode.NOT_FOUND);
-
-                var userRoles = await _userManager.GetRolesAsync(currentUser);
-                if (userRoles.Count != 0)
+                var currentUser = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == roleAssingSendDto.UserId);
+                if (currentUser != null)
                 {
-                    await _userManager.RemoveFromRolesAsync(currentUser, userRoles);
-                    await _userManager.AddToRoleAsync(currentUser, roleAssingSendDto.RoleName);
-                }
-                await _userManager.AddToRoleAsync(currentUser, roleAssingSendDto.RoleName);
+                    var currentRole = await _roleManager.FindByNameAsync(roleAssingSendDto.RoleName);
+                    if (currentRole == null)
+                        return CustomResponse<NoContent>.Fail("Role not found", ResponseStatusCode.NOT_FOUND);
 
-                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+                    var userRoles = await _userManager.GetRolesAsync(currentUser);
+                    if (userRoles.Count != 0)
+                    {
+                        await _userManager.RemoveFromRolesAsync(currentUser, userRoles);
+                        await _userManager.AddToRoleAsync(currentUser, roleAssingSendDto.RoleName);
+                    }
+                    await _userManager.AddToRoleAsync(currentUser, roleAssingSendDto.RoleName);
+
+                    return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+                }
+                return CustomResponse<NoContent>.Fail("User not found", ResponseStatusCode.NOT_FOUND);
             }
-            return CustomResponse<NoContent>.Fail("User not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
         public async Task<CustomResponse<NoContent>> ChangePasswordAsync(AppUserChangePasswordDto appUserChangePassword)
