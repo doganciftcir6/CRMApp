@@ -11,5 +11,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
     public interface IProjectService
     {
         Task<CustomResponse<IEnumerable<ProjectsDto>>> GetProjectsAsync();
+        Task<CustomResponse<ProjectDto>> GetProjectAsync(int projectId);
     }
 }

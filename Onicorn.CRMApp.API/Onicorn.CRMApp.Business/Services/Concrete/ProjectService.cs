@@ -5,11 +5,6 @@ using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.ProjectDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Onicorn.CRMApp.Business.Services.Concrete
 {
@@ -23,6 +18,17 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _mapper = mapper;
             _uow = uow;
             _projectRepository = projectRepository;
+        }
+
+        public async Task<CustomResponse<ProjectDto>> GetProjectAsync(int projectId)
+        {
+            Project project = await _uow.GetRepository<Project>().GetByIdAsync(projectId);
+            if (project != null)
+            {
+                ProjectDto projectDto = _mapper.Map<ProjectDto>(project);
+                return CustomResponse<ProjectDto>.Success(projectDto, ResponseStatusCode.OK);
+            }
+            return CustomResponse<ProjectDto>.Fail("Project not found", ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<IEnumerable<ProjectsDto>>> GetProjectsAsync()
