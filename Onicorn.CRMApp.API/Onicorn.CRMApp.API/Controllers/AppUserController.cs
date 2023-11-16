@@ -24,10 +24,16 @@ namespace Onicorn.CRMApp.API.Controllers
         {
             return CreateActionResultInstance(await _appUserService.GetProfileAsync());
         }
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetRoles()
+        [HttpGet("[action]/{userId}")]
+        public async Task<IActionResult> GetRoles(int userId)
         {
-            return CreateActionResultInstance(await _appUserService.GetRolesAsync());
+            return CreateActionResultInstance(await _appUserService.GetRolesAsync(userId.ToString()));
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost("[action]")]
+        public async Task<IActionResult> AssingRole(RoleAssingSendDto roleAssingSendDto)
+        {
+            return CreateActionResultInstance(await _appUserService.AssingRoleAsync(roleAssingSendDto));
         }
         [HttpPut("[action]")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateAppUserDto updateAppUserDto, CancellationToken cancellationToken)

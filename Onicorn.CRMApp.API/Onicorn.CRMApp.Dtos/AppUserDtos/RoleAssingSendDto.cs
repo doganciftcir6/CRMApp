@@ -8,7 +8,7 @@ namespace Onicorn.CRMApp.Dtos.AppUserDtos
 {
     public class RoleAssingSendDto
     {
-        public List<RoleDto>? Roles { get; set; }
+        public string? RoleName { get; set; }
         public int UserId { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace Onicorn.CRMApp.Shared.Utilities.Security.JWT
             //Security Key'in simetriğini alalım
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key));
             //ExpireDate oluşturalım (token geçerlilik süresi)
-            var expireDate = DateTime.UtcNow.AddMinutes(5);
+            var expireDate = DateTime.UtcNow.AddMinutes(5555555);
             //Şifrelenmiş kimliği oluşturuyoruz
             SigningCredentials credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             //token oluşurken token bilgisinin içerisinde kullanıcının rolü ve adı ve nameIdentifier ve email de olsun.

@@ -38,9 +38,26 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _roleManager = roleManager;
         }
 
-        public Task<CustomResponse<NoContent>> AssingRoleAsync(RoleAssingSendDto roleAssingSendDto)
+        public async Task<CustomResponse<NoContent>> AssingRoleAsync(RoleAssingSendDto roleAssingSendDto)
         {
-            throw new NotImplementedException();
+            var currentUser = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == roleAssingSendDto.UserId);
+            if (currentUser != null)
+            {
+                var currentRole = await _roleManager.FindByNameAsync(roleAssingSendDto.RoleName);
+                if (currentRole == null)
+                    return CustomResponse<NoContent>.Fail("Role not found", ResponseStatusCode.NOT_FOUND);
+
+                var userRoles = await _userManager.GetRolesAsync(currentUser);
+                if (userRoles.Count != 0)
+                {
+                    await _userManager.RemoveFromRolesAsync(currentUser, userRoles);
+                    await _userManager.AddToRoleAsync(currentUser, roleAssingSendDto.RoleName);
+                }
+                await _userManager.AddToRoleAsync(currentUser, roleAssingSendDto.RoleName);
+
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+            }
+            return CustomResponse<NoContent>.Fail("User not found", ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> ChangePasswordAsync(AppUserChangePasswordDto appUserChangePassword)
@@ -75,9 +92,9 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             return CustomResponse<AppUserDto>.Fail("User not found!", ResponseStatusCode.NOT_FOUND);
         }
 
-        public async Task<CustomResponse<List<RoleDto>>> GetRolesAsync()
+        public async Task<CustomResponse<List<RoleDto>>> GetRolesAsync(string userId)
         {
-            var currentUser = await _userManager.FindByIdAsync(_sharedIdentityService.GetUserId.ToString());
+            var currentUser = await _userManager.FindByIdAsync(userId);
             if (currentUser != null)
             {
                 var roleAssingDtos = new List<RoleDto>();
