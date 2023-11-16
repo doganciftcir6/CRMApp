@@ -72,6 +72,7 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<IValidator<CommunicationCreateDto>, CommunicationCreateDtoValidator>();
             services.AddScoped<IValidator<CommunicationUpdateDto>, CommunicationUpdateDtoValidator>();
             services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateDtoValidator>();
+            services.AddScoped<IValidator<CustomerUpdateDto>, CustomerUpdateDtoValidator>();
             //AutoMapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

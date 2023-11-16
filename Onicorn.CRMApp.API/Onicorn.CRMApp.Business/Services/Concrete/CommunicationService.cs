@@ -73,7 +73,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             var validationResult = _communicationUpdateDtoValidator.Validate(communicationUpdateDto);
             if (validationResult.IsValid)
             {
-                var oldData = await _uow.GetRepository<Communication>().AsNoTrackingGetByFilterAsync(x => x.Id == communicationUpdateDto.Id);
+                Communication oldData = await _uow.GetRepository<Communication>().AsNoTrackingGetByFilterAsync(x => x.Id == communicationUpdateDto.Id);
                 if (oldData == null)
                     return CustomResponse<NoContent>.Fail("Communication not found", ResponseStatusCode.NOT_FOUND);
 
