@@ -30,5 +30,12 @@ namespace Onicorn.CRMApp.API.Controllers
         {
             return CreateActionResultInstance(await _communicationService.InsertCommunicationAsync(communicationCreateDto));
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateCommunication(CommunicationUpdateDto communicationUpdateDto)
+        {
+            return CreateActionResultInstance(await _communicationService.UpdateCommunicationAsync(communicationUpdateDto));
+        }
     }
 }

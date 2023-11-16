@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Azure;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
@@ -22,12 +24,14 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly IMapper _mapper;
         private readonly ICommunicationRepository _communicationRepository;
         private readonly IValidator<CommunicationCreateDto> _communicationCreateDtoValidator;
-        public CommunicationService(IUow uow, IMapper mapper, ICommunicationRepository communicationRepository, IValidator<CommunicationCreateDto> communicationCreateDtoValidator)
+        private readonly IValidator<CommunicationUpdateDto> _communicationUpdateDtoValidator;
+        public CommunicationService(IUow uow, IMapper mapper, ICommunicationRepository communicationRepository, IValidator<CommunicationCreateDto> communicationCreateDtoValidator, IValidator<CommunicationUpdateDto> communicationUpdateDtoValidator)
         {
             _uow = uow;
             _mapper = mapper;
             _communicationRepository = communicationRepository;
             _communicationCreateDtoValidator = communicationCreateDtoValidator;
+            _communicationUpdateDtoValidator = communicationUpdateDtoValidator;
         }
 
         public async Task<CustomResponse<IEnumerable<CommunicationDto>>> GetCommunicatiosAsync()
@@ -47,6 +51,25 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 await _uow.GetRepository<Communication>().InsertAsync(communication);
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.CREATED);
+            }
+            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
+        }
+
+        public async Task<CustomResponse<NoContent>> UpdateCommunicationAsync(CommunicationUpdateDto communicationUpdateDto)
+        {
+            var validationResult = _communicationUpdateDtoValidator.Validate(communicationUpdateDto);
+            if (validationResult.IsValid)
+            {
+                var oldData = await _uow.GetRepository<Communication>().AsNoTrackingGetByFilterAsync(x => x.Id == communicationUpdateDto.Id);
+                if (oldData == null)
+                    return CustomResponse<NoContent>.Fail("Communication not found", ResponseStatusCode.NOT_FOUND);
+
+                Communication communication = _mapper.Map<Communication>(communicationUpdateDto);
+                communication.UpdateTime = DateTime.UtcNow;
+                communication.InsertTime = oldData.InsertTime;
+                _uow.GetRepository<Communication>().Update(communication);
+                await _uow.SaveChangesAsync();
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
