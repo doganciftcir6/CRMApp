@@ -13,6 +13,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
         Task<CustomResponse<IEnumerable<CommunicationDto>>> GetCommunicatiosAsync();
         Task<CustomResponse<NoContent>> InsertCommunicationAsync(CommunicationCreateDto communicationCreateDto);
         Task<CustomResponse<NoContent>> UpdateCommunicationAsync(CommunicationUpdateDto communicationUpdateDto);
-        Task<CustomResponse<NoContent>> RemoveCommunicationAsync(int id);
+        Task<CustomResponse<NoContent>> RemoveCommunicationAsync(int communicationId);
     }
 }

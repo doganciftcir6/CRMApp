@@ -55,9 +55,9 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
-        public async Task<CustomResponse<NoContent>> RemoveCommunicationAsync(int id)
+        public async Task<CustomResponse<NoContent>> RemoveCommunicationAsync(int communicationId)
         {
-            Communication communication = await _uow.GetRepository<Communication>().GetByIdAsync(id);
+            Communication communication = await _uow.GetRepository<Communication>().GetByIdAsync(communicationId);
             if (communication != null)
             {
                 communication.Status = false;

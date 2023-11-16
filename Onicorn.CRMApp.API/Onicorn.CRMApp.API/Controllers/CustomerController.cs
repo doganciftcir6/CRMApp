@@ -8,6 +8,7 @@ using Onicorn.CRMApp.Shared.ControllerBases;
 namespace Onicorn.CRMApp.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class CustomerController : CustomBaseController
     {
@@ -17,14 +18,12 @@ namespace Onicorn.CRMApp.API.Controllers
             _customerService = customerService;
         }
 
-        [Authorize]
         [HttpGet("[action]")]
         public async Task<IActionResult> GetCustomers()
         {
             return CreateActionResultInstance(await _customerService.GetCustomersAsync());
         }
 
-        [Authorize]
         [HttpGet("[action]/{customerId}")]
         public async Task<IActionResult> GetCustomer(int customerId)
         {
@@ -43,6 +42,13 @@ namespace Onicorn.CRMApp.API.Controllers
         public async Task<IActionResult> UpdateCustomer(CustomerUpdateDto customerUpdateDto)
         {
             return CreateActionResultInstance(await _customerService.UpdateCustomerAsync(customerUpdateDto));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("[action]/{customerId}")]
+        public async Task<IActionResult> RemoveCustomer(int customerId)
+        {
+            return CreateActionResultInstance(await _customerService.RemoveCustomerAsync(customerId));
         }
     }
 }

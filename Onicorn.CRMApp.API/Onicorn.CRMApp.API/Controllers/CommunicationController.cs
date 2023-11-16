@@ -40,10 +40,10 @@ namespace Onicorn.CRMApp.API.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("[action]/{id}")]
-        public async Task<IActionResult> DeleteCommunication(int id)
+        [HttpDelete("[action]/{communicationId}")]
+        public async Task<IActionResult> DeleteCommunication(int communicationId)
         {
-            return CreateActionResultInstance(await _communicationService.RemoveCommunicationAsync(id));
+            return CreateActionResultInstance(await _communicationService.RemoveCommunicationAsync(communicationId));
         }
     }
 }
