@@ -12,12 +12,14 @@ using Onicorn.CRMApp.Business.Services.Concrete;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.AppUserValidations;
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.CommunicationValidations;
+using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.CustomerValidations;
 using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
 using Onicorn.CRMApp.DataAccess.Repositories.Concrete;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
 using Onicorn.CRMApp.Dtos.CommunicationDtos;
+using Onicorn.CRMApp.Dtos.CustomerDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Security.JWT;
 using Onicorn.CRMApp.Shared.Utilities.Services;
@@ -69,6 +71,7 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<IValidator<RoleAssingSendDto>, RoleAssingSendDtoValidator>();
             services.AddScoped<IValidator<CommunicationCreateDto>, CommunicationCreateDtoValidator>();
             services.AddScoped<IValidator<CommunicationUpdateDto>, CommunicationUpdateDtoValidator>();
+            services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateDtoValidator>();
             //AutoMapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

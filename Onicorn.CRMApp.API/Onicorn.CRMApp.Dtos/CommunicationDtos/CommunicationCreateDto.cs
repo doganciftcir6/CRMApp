@@ -13,7 +13,6 @@ namespace Onicorn.CRMApp.Dtos.CommunicationDtos
         public string? Detail { get; set; }
         [JsonIgnore]
         public DateTime InsertTime { get; set; }
-        public bool Status { get; set; }
 
         public int CustomerId { get; set; }
         public int CommunicationTypeId { get; set; }
