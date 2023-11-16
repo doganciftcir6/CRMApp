@@ -8,6 +8,7 @@ namespace Onicorn.CRMApp.Business.Mapping.AutoMapper
     {
         public CustomerProfile()
         {
+            CreateMap<Customer, CustomersDto>().ReverseMap();
             CreateMap<Customer, CustomerDto>().ReverseMap();
         }
     }

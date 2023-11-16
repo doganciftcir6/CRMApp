@@ -10,7 +10,7 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
 {
     public interface ICustomerService
     {
-        Task<CustomResponse<IEnumerable<CustomerDto>>> GetCustomers();
-
+        Task<CustomResponse<IEnumerable<CustomersDto>>> GetCustomersAsync();
+        Task<CustomResponse<CustomerDto>> GetCustomerAsync(int customerId);
     }
 }

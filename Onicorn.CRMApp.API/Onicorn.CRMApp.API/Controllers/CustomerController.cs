@@ -17,10 +17,17 @@ namespace Onicorn.CRMApp.API.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<IActionResult> GetCustomers()
         {
-            return CreateActionResultInstance(await _customerService.GetCustomers());
+            return CreateActionResultInstance(await _customerService.GetCustomersAsync());
+        }
+
+        [Authorize]
+        [HttpGet("[action]/{customerId}")]
+        public async Task<IActionResult> GetCustomer(int customerId)
+        {
+            return CreateActionResultInstance(await _customerService.GetCustomerAsync(customerId));
         }
     }
 }
