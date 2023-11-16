@@ -13,6 +13,7 @@ using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.AppUserValidations;
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.CommunicationValidations;
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.CustomerValidations;
+using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.ProjectValidations;
 using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
 using Onicorn.CRMApp.DataAccess.Repositories.Concrete;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
@@ -20,6 +21,7 @@ using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
 using Onicorn.CRMApp.Dtos.CommunicationDtos;
 using Onicorn.CRMApp.Dtos.CustomerDtos;
+using Onicorn.CRMApp.Dtos.ProjectDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Security.JWT;
 using Onicorn.CRMApp.Shared.Utilities.Services;
@@ -75,6 +77,7 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<IValidator<CommunicationUpdateDto>, CommunicationUpdateDtoValidator>();
             services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateDtoValidator>();
             services.AddScoped<IValidator<CustomerUpdateDto>, CustomerUpdateDtoValidator>();
+            services.AddScoped<IValidator<ProjectCreateDto>, ProjectCreateDtoValidator>();
             //AutoMapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

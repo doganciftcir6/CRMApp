@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
 using Onicorn.CRMApp.Dtos.ProjectDtos;
 using Onicorn.CRMApp.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Onicorn.CRMApp.Business.Mapping.AutoMapper
 {
@@ -15,6 +10,7 @@ namespace Onicorn.CRMApp.Business.Mapping.AutoMapper
         {
             CreateMap<Project, ProjectsDto>().ReverseMap();
             CreateMap<Project, ProjectDto>().ReverseMap();
+            CreateMap<Project, ProjectCreateDto>().ReverseMap();
         }
     }
 }

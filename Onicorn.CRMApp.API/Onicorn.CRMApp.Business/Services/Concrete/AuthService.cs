@@ -63,12 +63,12 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             var validationResult = _AppUserRegisterDtoValidator.Validate(appUserRegisterDto);
             if (validationResult.IsValid)
             {
-                if(appUserRegisterDto.ImageURL != null && appUserRegisterDto.ImageURL.Length > 0)
+                var appUser = _mapper.Map<AppUser>(appUserRegisterDto);
+                if (appUserRegisterDto.ImageURL != null && appUserRegisterDto.ImageURL.Length > 0)
                 {
                     await AppUserImageUploadHelper.Run(_hostingEnvironment, appUserRegisterDto.ImageURL, cancellationToken);
                 }
 
-                var appUser = _mapper.Map<AppUser>(appUserRegisterDto);
                 appUser.ImageURL = Path.GetFileNameWithoutExtension(appUserRegisterDto.ImageURL.FileName) + Guid.NewGuid().ToString("N") + Path.GetExtension(appUserRegisterDto.ImageURL.FileName);
                 var registerResult = await _userManager.CreateAsync(appUser, appUserRegisterDto.Password);
                 if (registerResult.Succeeded)

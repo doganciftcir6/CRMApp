@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Onicorn.CRMApp.Business.Services.Interfaces;
+using Onicorn.CRMApp.Dtos.ProjectDtos;
 using Onicorn.CRMApp.Shared.ControllerBases;
 
 namespace Onicorn.CRMApp.API.Controllers
@@ -25,6 +26,12 @@ namespace Onicorn.CRMApp.API.Controllers
         public async Task<IActionResult> GetProject(int projectId)
         {
             return CreateActionResultInstance(await _projectService.GetProjectAsync(projectId));
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> InsertProject([FromForm]ProjectCreateDto projectCreateDto, CancellationToken cancellationToken)
+        {
+            return CreateActionResultInstance(await _projectService.InsertProjectAsync(projectCreateDto, cancellationToken));
         }
     }
 }
