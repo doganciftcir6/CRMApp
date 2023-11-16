@@ -55,6 +55,19 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
+        public async Task<CustomResponse<NoContent>> RemoveCommunicationAsync(int id)
+        {
+            Communication communication = await _uow.GetRepository<Communication>().GetByIdAsync(id);
+            if (communication != null)
+            {
+                communication.Status = false;
+                _uow.GetRepository<Communication>().Update(communication);
+                await _uow.SaveChangesAsync();
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+            }
+            return CustomResponse<NoContent>.Fail("Communication not found", ResponseStatusCode.NOT_FOUND);
+        }
+
         public async Task<CustomResponse<NoContent>> UpdateCommunicationAsync(CommunicationUpdateDto communicationUpdateDto)
         {
             var validationResult = _communicationUpdateDtoValidator.Validate(communicationUpdateDto);
