@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Onicorn.CRMApp.Business.Services.Interfaces;
+using Onicorn.CRMApp.Dtos.CommunicationDtos;
 using Onicorn.CRMApp.Shared.ControllerBases;
 using System.Data;
 
@@ -17,10 +18,17 @@ namespace Onicorn.CRMApp.API.Controllers
             _communicationService = communicationService;
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<IActionResult> GetCommunications()
         {
-            return CreateActionResultInstance(await _communicationService.GetCommunicatios());
+            return CreateActionResultInstance(await _communicationService.GetCommunicatiosAsync());
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("[action]")]
+        public async Task<IActionResult> InsertCommunication(CommunicationCreateDto communicationCreateDto)
+        {
+            return CreateActionResultInstance(await _communicationService.InsertCommunicationAsync(communicationCreateDto));
         }
     }
 }

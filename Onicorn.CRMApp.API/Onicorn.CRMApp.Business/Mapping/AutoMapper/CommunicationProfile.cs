@@ -10,6 +10,7 @@ namespace Onicorn.CRMApp.Business.Mapping.AutoMapper
         public CommunicationProfile()
         {
             CreateMap<Communication, CommunicationDto>().ForMember(dest => dest.CommunicationType, opt => opt.MapFrom(src => src.CommunicationType != null ? src.CommunicationType.Definition : null)).ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer != null ? src.Customer.CompanyName : null)).ReverseMap();
+            CreateMap<Communication, CommunicationCreateDto>().ReverseMap();
         }
     }
 }
