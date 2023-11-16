@@ -18,7 +18,7 @@ namespace Onicorn.CRMApp.Entities
         public string? Province { get; set; }
         public string? District { get; set; }
         public DateTime InsertTime { get; set; }
-        public DateTime UpdateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
         public bool Status { get; set; }
 
         public List<Communication>? Communications { get; set; }

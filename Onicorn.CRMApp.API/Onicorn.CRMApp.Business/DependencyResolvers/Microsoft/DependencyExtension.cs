@@ -12,6 +12,8 @@ using Onicorn.CRMApp.Business.Services.Concrete;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.AppUserValidations;
 using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
+using Onicorn.CRMApp.DataAccess.Repositories.Concrete;
+using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
 using Onicorn.CRMApp.Entities;
@@ -53,6 +55,9 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<ISharedIdentityService, SharedIdentityService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAppUserService, AppUserService>();
+            services.AddScoped<ICommunicationService, CommunicationService>();
+
+            services.AddScoped<ICommunicationRepository, CommunicationRepository>();
             //FluentValidations
             services.AddScoped<IValidator<AppUserRegisterDto>, AppUserRegisterDtoValidator>();
             services.AddScoped<IValidator<AppUserLoginDto>, AppUserLoginDtoValidator>();

@@ -16,7 +16,7 @@ namespace Onicorn.CRMApp.Entities
         public decimal Price { get; set; }
         public string? ImageURL { get; set; }
         public DateTime InsertTime { get; set; }
-        public DateTime UpdateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
         public bool Status { get; set; }
 
         public List<Sale>? Sales { get; set; }

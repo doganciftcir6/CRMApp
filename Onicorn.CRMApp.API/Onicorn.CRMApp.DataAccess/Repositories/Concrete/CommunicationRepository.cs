@@ -1,4 +1,5 @@
-﻿using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
+﻿using Microsoft.EntityFrameworkCore;
+using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.Entities;
 using System;
@@ -13,6 +14,12 @@ namespace Onicorn.CRMApp.DataAccess.Repositories.Concrete
     {
         public CommunicationRepository(AppDbContext appDbContext) : base(appDbContext)
         {
+
+        }
+
+        public async override Task<IEnumerable<Communication>> GetAllAsync()
+        {
+            return await _appDbContext.Set<Communication>().Include(x => x.CommunicationType).Include(x => x.Customer).Where(x => x.Status == true).ToListAsync();
         }
     }
 }

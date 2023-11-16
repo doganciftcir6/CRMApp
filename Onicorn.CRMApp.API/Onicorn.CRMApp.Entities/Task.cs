@@ -14,8 +14,8 @@ namespace Onicorn.CRMApp.Entities
         public string? Taskname { get; set; }
         public string? Description { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime FinishDate { get; set; }
-        public DateTime UpdateTime { get; set; }
+        public DateTime? FinishDate { get; set; }
+        public DateTime? UpdateTime { get; set; }
         public bool Status { get; set; }
 
         public int TaskSituationId { get; set; }
