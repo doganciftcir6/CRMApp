@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Dtos.TaskDtos;
@@ -7,6 +8,7 @@ using Onicorn.CRMApp.Shared.ControllerBases;
 namespace Onicorn.CRMApp.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class TaskController : CustomBaseController
     {
@@ -34,6 +36,7 @@ namespace Onicorn.CRMApp.API.Controllers
             return CreateActionResultInstance(await _taskService.GetTaskAsync(taskId));
         }
 
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost("[action]")]
         public async Task<IActionResult> InsertTask(TaskCreateDto taskCreateDto)
         {
@@ -44,6 +47,13 @@ namespace Onicorn.CRMApp.API.Controllers
         public async Task<IActionResult> UpdateTask(TaskUpdateDto taskUpdateDto)
         {
             return CreateActionResultInstance(await _taskService.UpdateTaskAsync(taskUpdateDto));
+        }
+
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpPut("[action]/{taskId}")]
+        public async Task<IActionResult> RemoveTask(int taskId)
+        {
+            return CreateActionResultInstance(await _taskService.RemoveTaskAsync(taskId));
         }
     }
 }

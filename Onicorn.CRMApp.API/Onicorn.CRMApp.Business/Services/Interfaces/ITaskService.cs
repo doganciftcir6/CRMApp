@@ -10,5 +10,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
         Task<CustomResponse<TaskDto>> GetTaskAsync(int taskId);
         Task<CustomResponse<NoContent>> InsertTaskAsync(TaskCreateDto taskCreateDto);
         Task<CustomResponse<NoContent>> UpdateTaskAsync(TaskUpdateDto taskUpdateDto);
+        Task<CustomResponse<NoContent>> RemoveTaskAsync(int taskId);
     }
 }

@@ -65,6 +65,19 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
+        public async Task<CustomResponse<NoContent>> RemoveTaskAsync(int taskId)
+        {
+            Task task = await _uow.GetRepository<Task>().GetByIdAsync(taskId);
+            if (task != null)
+            {
+                task.Status = false;
+                _uow.GetRepository<Task>().Update(task);
+                await _uow.SaveChangesAsync();
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+            }
+            return CustomResponse<NoContent>.Fail("Task not found", ResponseStatusCode.NOT_FOUND);
+        }
+
         public async Task<CustomResponse<NoContent>> UpdateTaskAsync(TaskUpdateDto taskUpdateDto)
         {
             var validationResult = _taskUpdateDtoValidator.Validate(taskUpdateDto);
