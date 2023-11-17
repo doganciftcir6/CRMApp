@@ -10,6 +10,7 @@ namespace Onicorn.CRMApp.Business.Mapping.AutoMapper
         {
             CreateMap<Task, TasksDto>().ForMember(dest => dest.AppUser, opt => opt.MapFrom(src => src.AppUser != null ? src.AppUser.Firstname + src.AppUser.Lastname : null)).ForMember(dest => dest.TaskSituation, opt => opt.MapFrom(src => src.TaskSituation != null ? src.TaskSituation.Definition : null)).ReverseMap();
             CreateMap<Task, TaskDto>().ForMember(dest => dest.AppUser, opt => opt.MapFrom(src => src.AppUser != null ? src.AppUser.Firstname + src.AppUser.Lastname : null)).ForMember(dest => dest.TaskSituation, opt => opt.MapFrom(src => src.TaskSituation != null ? src.TaskSituation.Definition : null)).ReverseMap();
+            CreateMap<Task, TaskCreateDto>().ReverseMap();
         }
     }
 }

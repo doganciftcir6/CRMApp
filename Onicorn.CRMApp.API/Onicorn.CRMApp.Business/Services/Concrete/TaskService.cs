@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
@@ -15,12 +16,14 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly ITaskRepository _taskRepository;
         private readonly IMapper _mapper;
         private readonly ISharedIdentityService _sharedIdentityService;
-        public TaskService(IUow uow, ITaskRepository taskRepository, IMapper mapper, ISharedIdentityService sharedIdentityService)
+        private readonly IValidator<TaskCreateDto> _taskCreateDtoValidator;
+        public TaskService(IUow uow, ITaskRepository taskRepository, IMapper mapper, ISharedIdentityService sharedIdentityService, IValidator<TaskCreateDto> taskCreateDtoValidator)
         {
             _uow = uow;
             _taskRepository = taskRepository;
             _mapper = mapper;
             _sharedIdentityService = sharedIdentityService;
+            _taskCreateDtoValidator = taskCreateDtoValidator;
         }
 
         public async Task<CustomResponse<TaskDto>> GetTaskAsync(int taskId)
@@ -44,6 +47,20 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         {
             IEnumerable<TasksDto> tasksDtos = _mapper.Map<IEnumerable<TasksDto>>(await _taskRepository.GetAllFilterAsync(x => x.Status == true && x.AppUserId == _sharedIdentityService.GetUserId));
             return CustomResponse<IEnumerable<TasksDto>>.Success(tasksDtos, ResponseStatusCode.OK);
+        }
+
+        public async Task<CustomResponse<NoContent>> InsertTaskAsync(TaskCreateDto taskCreateDto)
+        {
+            var validationResult = _taskCreateDtoValidator.Validate(taskCreateDto);
+            if (validationResult.IsValid)
+            {
+                Task task = _mapper.Map<Task>(taskCreateDto);
+                task.Status = true;
+                await _uow.GetRepository<Task>().InsertAsync(task);
+                await _uow.SaveChangesAsync();
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+            }
+            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
     }
 }

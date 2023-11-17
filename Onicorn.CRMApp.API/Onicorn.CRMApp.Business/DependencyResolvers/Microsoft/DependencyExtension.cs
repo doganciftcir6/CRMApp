@@ -14,6 +14,7 @@ using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.CommunicationVali
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.CustomerValidations;
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.ProjectValidations;
 using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.SaleValidations;
+using Onicorn.CRMApp.Business.ValidationRules.FluentValidation.TaskValidations;
 using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
 using Onicorn.CRMApp.DataAccess.Repositories.Concrete;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
@@ -23,6 +24,7 @@ using Onicorn.CRMApp.Dtos.CommunicationDtos;
 using Onicorn.CRMApp.Dtos.CustomerDtos;
 using Onicorn.CRMApp.Dtos.ProjectDtos;
 using Onicorn.CRMApp.Dtos.SaleDtos;
+using Onicorn.CRMApp.Dtos.TaskDtos;
 using Onicorn.CRMApp.Entities;
 using Onicorn.CRMApp.Shared.Utilities.Security.JWT;
 using Onicorn.CRMApp.Shared.Utilities.Services;
@@ -82,6 +84,7 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<IValidator<ProjectUpdateDto>, ProjectUpdateDtoValidator>();
             services.AddScoped<IValidator<SaleCreateDto>, SaleCreateDtoValidator>();
             services.AddScoped<IValidator<SaleUpdateDto>, SaleUpdateDtoValidator>();
+            services.AddScoped<IValidator<TaskCreateDto>, TaskCreateValidator>();
             //AutoMapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
