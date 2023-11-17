@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onicorn.CRMApp.Shared", "On
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontends", "Frontends", "{118E3E39-70F1-4DA8-A41D-50748F182B8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onicorn.CRMApp.Web", "Onicorn.CRMApp.Web\Onicorn.CRMApp.Web.csproj", "{D66E5DB6-5792-409B-8C23-F5038A3B364A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onicorn.CRMApp.Web", "Onicorn.CRMApp.Web\Onicorn.CRMApp.Web.csproj", "{D66E5DB6-5792-409B-8C23-F5038A3B364A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
