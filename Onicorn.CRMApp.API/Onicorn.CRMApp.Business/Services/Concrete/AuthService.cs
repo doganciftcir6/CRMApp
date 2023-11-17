@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
@@ -47,7 +48,8 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                         return CustomResponse<TokenResponseDto>.Success(token, ResponseStatusCode.OK);
                     }
                 }
-                return CustomResponse<TokenResponseDto>.Fail("Email or password is incorrect", ResponseStatusCode.BAD_REQUEST);
+                return CustomResponse<TokenResponseDto>.Fail(
+                    AppUserMessages.LOGİN_FAİLED, ResponseStatusCode.BAD_REQUEST);
             }
             return CustomResponse<TokenResponseDto>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
@@ -78,7 +80,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                     }
                     //register olan kullanıcıya default member rolünü ekle
                     await _userManager.AddToRoleAsync(appUser, "Member");
-                    return CustomResponse<string>.Success("User has been successfully created.", ResponseStatusCode.CREATED);
+                    return CustomResponse<string>.Success(AppUserMessages.SUCCESS_REGİSTER, ResponseStatusCode.CREATED);
                 }
                 return CustomResponse<string>.Fail(registerResult.Errors.Select(x => x.Description).ToList(), ResponseStatusCode.BAD_REQUEST);
             }

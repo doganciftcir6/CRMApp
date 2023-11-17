@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
@@ -55,7 +56,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }
-            return CustomResponse<NoContent>.Fail("Sale not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<NoContent>.Fail(SaleMessages.NOT_FOUND_SALE, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> UpdateSaleAsync(SaleUpdateDto saleUpdateDto)
@@ -65,7 +66,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             {
                 Sale oldData = await _uow.GetRepository<Sale>().AsNoTrackingGetByFilterAsync(x => x.Id == saleUpdateDto.Id);
                 if (oldData == null)
-                    return CustomResponse<NoContent>.Fail("Sale not found", ResponseStatusCode.NOT_FOUND);
+                    return CustomResponse<NoContent>.Fail(SaleMessages.NOT_FOUND_SALE, ResponseStatusCode.NOT_FOUND);
 
                 if (saleUpdateDto.SalesDate == null)
                     saleUpdateDto.SalesDate = oldData.SalesDate;

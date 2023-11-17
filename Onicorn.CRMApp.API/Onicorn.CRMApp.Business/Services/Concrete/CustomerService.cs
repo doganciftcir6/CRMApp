@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
 using Onicorn.CRMApp.Dtos.CustomerDtos;
@@ -30,7 +31,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 CustomerDto customerDto = _mapper.Map<CustomerDto>(customer);
                 return CustomResponse<CustomerDto>.Success(customerDto, ResponseStatusCode.OK);
             }
-            return CustomResponse<CustomerDto>.Fail("Customer not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<CustomerDto>.Fail(CustomerMessages.NOT_FOUND_CUSTOMER, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<IEnumerable<CustomersDto>>> GetCustomersAsync()
@@ -64,7 +65,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }
-            return CustomResponse<NoContent>.Fail("Customer not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<NoContent>.Fail(CustomerMessages.NOT_FOUND_CUSTOMER, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> UpdateCustomerAsync(CustomerUpdateDto customerUpdateDto)
@@ -74,7 +75,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             {
                 Customer oldData = await _uow.GetRepository<Customer>().AsNoTrackingGetByFilterAsync(x => x.Id == customerUpdateDto.Id);
                 if (oldData == null)
-                    return CustomResponse<NoContent>.Fail("Customer not found", ResponseStatusCode.NOT_FOUND);
+                    return CustomResponse<NoContent>.Fail(CustomerMessages.NOT_FOUND_CUSTOMER, ResponseStatusCode.NOT_FOUND);
 
                 Customer customer = _mapper.Map<Customer>(customerUpdateDto);
                 customer.UpdateTime = DateTime.UtcNow;

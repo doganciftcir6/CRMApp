@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.Dtos.AppUserDtos;
@@ -44,7 +45,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 {
                     var currentRole = await _roleManager.FindByNameAsync(roleAssingSendDto.RoleName);
                     if (currentRole == null)
-                        return CustomResponse<NoContent>.Fail("Role not found", ResponseStatusCode.NOT_FOUND);
+                        return CustomResponse<NoContent>.Fail(AppUserMessages.NOT_FOUND_ROLE, ResponseStatusCode.NOT_FOUND);
 
                     var userRoles = await _userManager.GetRolesAsync(currentUser);
                     if (userRoles.Count != 0)
@@ -56,7 +57,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
 
                     return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
                 }
-                return CustomResponse<NoContent>.Fail("User not found", ResponseStatusCode.NOT_FOUND);
+                return CustomResponse<NoContent>.Fail(AppUserMessages.NOT_FOUND_USER, ResponseStatusCode.NOT_FOUND);
             }
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
@@ -75,9 +76,9 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                         await _userManager.ChangePasswordAsync(currentUser, appUserChangePassword.CurrentPassword, appUserChangePassword.NewPassword);
                         return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
                     }
-                    return CustomResponse<NoContent>.Fail("Wrong current password!", ResponseStatusCode.BAD_REQUEST);
+                    return CustomResponse<NoContent>.Fail(AppUserMessages.WRONG_CURRENT_PASSWORD, ResponseStatusCode.BAD_REQUEST);
                 }
-                return CustomResponse<NoContent>.Fail("User not found", ResponseStatusCode.NOT_FOUND);
+                return CustomResponse<NoContent>.Fail(AppUserMessages.NOT_FOUND_USER, ResponseStatusCode.NOT_FOUND);
             }
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
@@ -90,7 +91,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 var appUserDto = _mapper.Map<AppUserDto>(userInfo);
                 return CustomResponse<AppUserDto>.Success(appUserDto, ResponseStatusCode.OK);
             }
-            return CustomResponse<AppUserDto>.Fail("User not found!", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<AppUserDto>.Fail(AppUserMessages.NOT_FOUND_USER, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<List<RoleDto>>> GetRolesAsync(string userId)
@@ -115,7 +116,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 }
                 return CustomResponse<List<RoleDto>>.Success(roleAssingDtos, ResponseStatusCode.OK);
             }
-            return CustomResponse<List<RoleDto>>.Fail("User not found!", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<List<RoleDto>>.Fail(AppUserMessages.NOT_FOUND_USER, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> UpdateProfileAsync(UpdateAppUserDto updateAppUserDto, CancellationToken cancellationToken)
@@ -147,7 +148,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                     }
                     return CustomResponse<NoContent>.Fail(updateResult.Errors.Select(x => x.Description).ToList(), ResponseStatusCode.BAD_REQUEST);
                 }
-                return CustomResponse<NoContent>.Fail("User not found!", ResponseStatusCode.NOT_FOUND);
+                return CustomResponse<NoContent>.Fail(AppUserMessages.NOT_FOUND_USER, ResponseStatusCode.NOT_FOUND);
             }
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
@@ -36,7 +37,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 TaskDto taskDto = _mapper.Map<TaskDto>(task);
                 return CustomResponse<TaskDto>.Success(taskDto, ResponseStatusCode.OK);
             }
-            return CustomResponse<TaskDto>.Fail("Task not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<TaskDto>.Fail(TaskMessages.NOT_FOUND_TASK, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<IEnumerable<TasksDto>>> GetTasksAsync()
@@ -75,7 +76,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }
-            return CustomResponse<NoContent>.Fail("Task not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<NoContent>.Fail(TaskMessages.NOT_FOUND_TASK, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> UpdateTaskAsync(TaskUpdateDto taskUpdateDto)
@@ -85,7 +86,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             {
                 Task oldData = await _uow.GetRepository<Task>().AsNoTrackingGetByFilterAsync(x => x.Id == taskUpdateDto.Id);
                 if (oldData == null)
-                    return CustomResponse<NoContent>.Fail("Task not found", ResponseStatusCode.NOT_FOUND);
+                    return CustomResponse<NoContent>.Fail(TaskMessages.NOT_FOUND_TASK, ResponseStatusCode.NOT_FOUND);
 
                 if (taskUpdateDto.StartDate == null)
                     taskUpdateDto.StartDate = oldData.StartDate;

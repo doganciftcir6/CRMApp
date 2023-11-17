@@ -2,6 +2,7 @@
 using Azure;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.DataAccess.UnitOfWork;
@@ -65,7 +66,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }
-            return CustomResponse<NoContent>.Fail("Communication not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<NoContent>.Fail(CommunicationMessages.NOT_FOUND_COMMUNİCATİON, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> UpdateCommunicationAsync(CommunicationUpdateDto communicationUpdateDto)
@@ -75,7 +76,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             {
                 Communication oldData = await _uow.GetRepository<Communication>().AsNoTrackingGetByFilterAsync(x => x.Id == communicationUpdateDto.Id);
                 if (oldData == null)
-                    return CustomResponse<NoContent>.Fail("Communication not found", ResponseStatusCode.NOT_FOUND);
+                    return CustomResponse<NoContent>.Fail(CommunicationMessages.NOT_FOUND_COMMUNİCATİON, ResponseStatusCode.NOT_FOUND);
 
                 Communication communication = _mapper.Map<Communication>(communicationUpdateDto);
                 communication.UpdateTime = DateTime.UtcNow;

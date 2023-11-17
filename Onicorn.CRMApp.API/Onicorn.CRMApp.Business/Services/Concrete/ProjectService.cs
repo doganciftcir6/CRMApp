@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
+using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
@@ -37,7 +38,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 ProjectDto projectDto = _mapper.Map<ProjectDto>(project);
                 return CustomResponse<ProjectDto>.Success(projectDto, ResponseStatusCode.OK);
             }
-            return CustomResponse<ProjectDto>.Fail("Project not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<ProjectDto>.Fail(ProjectMessages.NOT_FOUND_PROJECT, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<IEnumerable<ProjectsDto>>> GetProjectsAsync()
@@ -81,7 +82,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }
-            return CustomResponse<NoContent>.Fail("Project not found", ResponseStatusCode.NOT_FOUND);
+            return CustomResponse<NoContent>.Fail(ProjectMessages.NOT_FOUND_PROJECT, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<NoContent>> UpdateProjectAsync(ProjectUpdateDto projectUpdateDto, CancellationToken cancellationToken)
@@ -91,7 +92,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             {
                 Project oldData = await _uow.GetRepository<Project>().AsNoTrackingGetByFilterAsync(x => x.Id == projectUpdateDto.Id);
                 if (oldData == null)
-                    return CustomResponse<NoContent>.Fail("Project not found", ResponseStatusCode.NOT_FOUND);
+                    return CustomResponse<NoContent>.Fail(ProjectMessages.NOT_FOUND_PROJECT, ResponseStatusCode.NOT_FOUND);
 
                 Project project = _mapper.Map<Project>(projectUpdateDto);
                 if (projectUpdateDto.ImageURL != null && projectUpdateDto.ImageURL.Length > 0)
