@@ -1,11 +1,8 @@
-﻿using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
+﻿using Microsoft.EntityFrameworkCore;
+using Onicorn.CRMApp.DataAccess.Contexts.EntityFramework;
 using Onicorn.CRMApp.DataAccess.Repositories.Interfaces;
 using Onicorn.CRMApp.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Onicorn.CRMApp.DataAccess.Repositories.Concrete
 {
@@ -13,6 +10,10 @@ namespace Onicorn.CRMApp.DataAccess.Repositories.Concrete
     {
         public SaleRepository(AppDbContext appDbContext) : base(appDbContext)
         {
+        }
+        public override async Task<IEnumerable<Sale>> GetAllFilterAsync(Expression<Func<Sale, bool>> filter)
+        {
+            return await _appDbContext.Set<Sale>().Where(filter).OrderByDescending(x => x.SalesDate).ToListAsync();
         }
     }
 }
