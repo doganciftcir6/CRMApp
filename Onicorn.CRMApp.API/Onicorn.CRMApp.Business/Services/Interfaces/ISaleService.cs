@@ -8,5 +8,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
         Task<CustomResponse<IEnumerable<SalesDto>>> GetSalesAsync();
         Task<CustomResponse<NoContent>> InsertSaleAsync(SaleCreateDto saleCreateDto);
         Task<CustomResponse<NoContent>> UpdateSaleAsync(SaleUpdateDto saleUpdateDto);
+        Task<CustomResponse<NoContent>> RemoveSaleAsync(int saleId);
     }
 }
