@@ -6,5 +6,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
     public interface ITaskService
     {
         Task<CustomResponse<IEnumerable<TasksDto>>> GetTasks();
+        Task<CustomResponse<IEnumerable<TasksDto>>> GetTasksByUser();
     }
 }

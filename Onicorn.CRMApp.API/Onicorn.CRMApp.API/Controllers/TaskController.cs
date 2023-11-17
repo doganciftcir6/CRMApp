@@ -20,5 +20,11 @@ namespace Onicorn.CRMApp.API.Controllers
         {
             return CreateActionResultInstance(await _taskService.GetTasks());
         }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetTasksByUser()
+        {
+            return CreateActionResultInstance(await _taskService.GetTasksByUser());
+        }
     }
 }
