@@ -14,7 +14,12 @@ namespace Onicorn.CRMApp.DataAccess.Repositories.Concrete
 
         public override async Task<IEnumerable<Task>> GetAllFilterAsync(Expression<Func<Task, bool>> filter)
         {
-           return await _appDbContext.Set<Task>().Include(x => x.AppUser).Include(x => x.TaskSituation).Where(filter).OrderByDescending(x => x.StartDate).ToListAsync();
+            return await _appDbContext.Set<Task>().Include(x => x.AppUser).Include(x => x.TaskSituation).Where(filter).OrderByDescending(x => x.StartDate).ToListAsync();
+        }
+
+        public override async Task<Task> GetByFilterAsync(Expression<Func<Task, bool>> filter)
+        {
+            return await _appDbContext.Set<Task>().Include(x => x.AppUser).Include(x => x.TaskSituation).Where(filter).OrderByDescending(x => x.StartDate).SingleOrDefaultAsync();
         }
     }
 }
