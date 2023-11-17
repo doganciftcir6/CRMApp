@@ -28,7 +28,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _taskUpdateDtoValidator = taskUpdateDtoValidator;
         }
 
-        public async Task<CustomResponse<TaskDto>> GetTaskAsync(int taskId)
+        public async Task<CustomResponse<TaskDto>> GetTaskByIdAsync(int taskId)
         {
             Task task = await _taskRepository.GetByFilterAsync(x => x.Id == taskId && x.Status == true);
             if (task != null)

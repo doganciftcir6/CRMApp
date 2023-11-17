@@ -33,7 +33,7 @@ namespace Onicorn.CRMApp.API.Controllers
         [HttpGet("[action]/{taskId}")]
         public async Task<IActionResult> GetTask(int taskId)
         {
-            return CreateActionResultInstance(await _taskService.GetTaskAsync(taskId));
+            return CreateActionResultInstance(await _taskService.GetTaskByIdAsync(taskId));
         }
 
         [Authorize(Roles = "Admin, ProjectManager")]

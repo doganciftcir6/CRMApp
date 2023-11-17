@@ -27,7 +27,7 @@ namespace Onicorn.CRMApp.API.Controllers
         [HttpGet("[action]/{projectId}")]
         public async Task<IActionResult> GetProject(int projectId)
         {
-            return CreateActionResultInstance(await _projectService.GetProjectAsync(projectId));
+            return CreateActionResultInstance(await _projectService.GetProjectByIdAsync(projectId));
         }
 
         [Authorize( Roles = "Admin")]

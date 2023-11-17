@@ -29,7 +29,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _projectUpdateDtoValidator = projectUpdateDtoValidator;
         }
 
-        public async Task<CustomResponse<ProjectDto>> GetProjectAsync(int projectId)
+        public async Task<CustomResponse<ProjectDto>> GetProjectByIdAsync(int projectId)
         {
             Project project = await _uow.GetRepository<Project>().GetByIdAsync(projectId);
             if (project != null)

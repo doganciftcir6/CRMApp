@@ -22,7 +22,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _customerUpdateDtoValidator = customerUpdateDtoValidator;
         }
 
-        public async Task<CustomResponse<CustomerDto>> GetCustomerAsync(int customerId)
+        public async Task<CustomResponse<CustomerDto>> GetCustomerByIdAsync(int customerId)
         {
             Customer customer = await _uow.GetRepository<Customer>().GetByIdAsync(customerId);
             if (customer != null)

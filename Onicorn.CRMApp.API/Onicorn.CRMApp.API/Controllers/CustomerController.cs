@@ -27,7 +27,7 @@ namespace Onicorn.CRMApp.API.Controllers
         [HttpGet("[action]/{customerId}")]
         public async Task<IActionResult> GetCustomer(int customerId)
         {
-            return CreateActionResultInstance(await _customerService.GetCustomerAsync(customerId));
+            return CreateActionResultInstance(await _customerService.GetCustomerByIdAsync(customerId));
         }
 
         [Authorize(Roles = "Admin")]

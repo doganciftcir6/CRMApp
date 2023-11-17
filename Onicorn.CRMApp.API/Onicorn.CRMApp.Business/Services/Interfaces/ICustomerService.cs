@@ -11,7 +11,7 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
     public interface ICustomerService
     {
         Task<CustomResponse<IEnumerable<CustomersDto>>> GetCustomersAsync();
-        Task<CustomResponse<CustomerDto>> GetCustomerAsync(int customerId);
+        Task<CustomResponse<CustomerDto>> GetCustomerByIdAsync(int customerId);
         Task<CustomResponse<NoContent>> InsertCustomerAsync(CustomerCreateDto customerCreateDto);
         Task<CustomResponse<NoContent>> UpdateCustomerAsync(CustomerUpdateDto customerUpdateDto);
         Task<CustomResponse<NoContent>> RemoveCustomerAsync(int customerId);
