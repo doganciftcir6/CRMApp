@@ -15,12 +15,14 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly ISaleRepository _saleRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<SaleCreateDto> _saleCreateDtoValidator;
-        public SaleService(IUow uow, ISaleRepository saleRepository, IMapper mapper, IValidator<SaleCreateDto> saleCreateDtoValidator)
+        private readonly IValidator<SaleUpdateDto> _saleUpdateDtoValidator;
+        public SaleService(IUow uow, ISaleRepository saleRepository, IMapper mapper, IValidator<SaleCreateDto> saleCreateDtoValidator, IValidator<SaleUpdateDto> saleUpdateDtoValidator)
         {
             _uow = uow;
             _saleRepository = saleRepository;
             _mapper = mapper;
             _saleCreateDtoValidator = saleCreateDtoValidator;
+            _saleUpdateDtoValidator = saleUpdateDtoValidator;
         }
 
         public async Task<CustomResponse<IEnumerable<SalesDto>>> GetSalesAsync()
@@ -37,6 +39,26 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 Sale sale = _mapper.Map<Sale>(saleCreateDto);
                 sale.Status = true;
                 await _uow.GetRepository<Sale>().InsertAsync(sale);
+                await _uow.SaveChangesAsync();
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+            }
+            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
+        }
+
+        public async Task<CustomResponse<NoContent>> UpdateSaleAsync(SaleUpdateDto saleUpdateDto)
+        {
+            var validationResult = _saleUpdateDtoValidator.Validate(saleUpdateDto);
+            if (validationResult.IsValid)
+            {
+                Sale oldData = await _uow.GetRepository<Sale>().AsNoTrackingGetByFilterAsync(x => x.Id == saleUpdateDto.Id);
+                if (oldData == null)
+                    return CustomResponse<NoContent>.Fail("Sale not found", ResponseStatusCode.NOT_FOUND);
+
+                if (saleUpdateDto.SalesDate == null)
+                    saleUpdateDto.SalesDate = oldData.SalesDate;
+                Sale sale = _mapper.Map<Sale>(saleUpdateDto);
+
+                _uow.GetRepository<Sale>().Update(sale);
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }

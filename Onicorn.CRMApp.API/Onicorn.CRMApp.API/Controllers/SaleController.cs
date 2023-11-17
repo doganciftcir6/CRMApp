@@ -27,5 +27,11 @@ namespace Onicorn.CRMApp.API.Controllers
         {
             return CreateActionResultInstance(await _saleService.InsertSaleAsync(saleCreateDto));
         }
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateSale(SaleUpdateDto saleUpdateDto)
+        {
+            return CreateActionResultInstance(await _saleService.UpdateSaleAsync(saleUpdateDto));
+        }
     }
 }

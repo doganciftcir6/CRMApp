@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Onicorn.CRMApp.Dtos.SaleDtos
+﻿namespace Onicorn.CRMApp.Dtos.SaleDtos
 {
     public class SalesDto
     {
@@ -15,8 +9,8 @@ namespace Onicorn.CRMApp.Dtos.SaleDtos
         {
             get
             {
-                decimal kdvOran = (decimal)(1 + KDV / 100.0);
-                decimal totalAmount = SalesAmount * kdvOran;
+                decimal kdvRate = (decimal)(1 + KDV / 100.0);
+                decimal totalAmount = SalesAmount * kdvRate;
 
                 return totalAmount;
             }
