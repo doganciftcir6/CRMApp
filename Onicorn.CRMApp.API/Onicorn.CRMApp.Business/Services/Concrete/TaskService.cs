@@ -17,13 +17,15 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly IMapper _mapper;
         private readonly ISharedIdentityService _sharedIdentityService;
         private readonly IValidator<TaskCreateDto> _taskCreateDtoValidator;
-        public TaskService(IUow uow, ITaskRepository taskRepository, IMapper mapper, ISharedIdentityService sharedIdentityService, IValidator<TaskCreateDto> taskCreateDtoValidator)
+        private readonly IValidator<TaskUpdateDto> _taskUpdateDtoValidator;
+        public TaskService(IUow uow, ITaskRepository taskRepository, IMapper mapper, ISharedIdentityService sharedIdentityService, IValidator<TaskCreateDto> taskCreateDtoValidator, IValidator<TaskUpdateDto> taskUpdateDtoValidator)
         {
             _uow = uow;
             _taskRepository = taskRepository;
             _mapper = mapper;
             _sharedIdentityService = sharedIdentityService;
             _taskCreateDtoValidator = taskCreateDtoValidator;
+            _taskUpdateDtoValidator = taskUpdateDtoValidator;
         }
 
         public async Task<CustomResponse<TaskDto>> GetTaskAsync(int taskId)
@@ -57,6 +59,29 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 Task task = _mapper.Map<Task>(taskCreateDto);
                 task.Status = true;
                 await _uow.GetRepository<Task>().InsertAsync(task);
+                await _uow.SaveChangesAsync();
+                return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
+            }
+            return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
+        }
+
+        public async Task<CustomResponse<NoContent>> UpdateTaskAsync(TaskUpdateDto taskUpdateDto)
+        {
+            var validationResult = _taskUpdateDtoValidator.Validate(taskUpdateDto);
+            if (validationResult.IsValid)
+            {
+                Task oldData = await _uow.GetRepository<Task>().AsNoTrackingGetByFilterAsync(x => x.Id == taskUpdateDto.Id);
+                if (oldData == null)
+                    return CustomResponse<NoContent>.Fail("Task not found", ResponseStatusCode.NOT_FOUND);
+
+                if (taskUpdateDto.StartDate == null)
+                    taskUpdateDto.StartDate = oldData.StartDate;
+                if (taskUpdateDto.FinishDate == null)
+                    taskUpdateDto.FinishDate = oldData.FinishDate;
+                Task task = _mapper.Map<Task>(taskUpdateDto);
+                task.UpdateTime = DateTime.UtcNow;
+
+                _uow.GetRepository<Task>().Update(task);
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }

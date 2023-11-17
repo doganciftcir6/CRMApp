@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Onicorn.CRMApp.Business.ValidationRules.FluentValidation.TaskValidations
 {
-    public class TaskCreateValidator : AbstractValidator<TaskCreateDto>
+    public class TaskCreateDtoValidator : AbstractValidator<TaskCreateDto>
     {
-        public TaskCreateValidator()
+        public TaskCreateDtoValidator()
         {
             RuleFor(x => x.Taskname).NotEmpty().WithMessage("The task name field cannot be empty!");
             RuleFor(x => x.Taskname).MinimumLength(2).WithMessage("The task name field must contain at least 2 characters!");
