@@ -13,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onicorn.CRMApp.Dtos", "Onic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onicorn.CRMApp.Business", "Onicorn.CRMApp.Business\Onicorn.CRMApp.Business.csproj", "{ACCECFAF-4458-44E1-808D-5C90888D7FE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onicorn.CRMApp.Shared", "Onicorn.CRMApp.Shared\Onicorn.CRMApp.Shared.csproj", "{983AF0B4-F978-4112-AA74-03E93244A823}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onicorn.CRMApp.Shared", "Onicorn.CRMApp.Shared\Onicorn.CRMApp.Shared.csproj", "{983AF0B4-F978-4112-AA74-03E93244A823}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontends", "Frontends", "{118E3E39-70F1-4DA8-A41D-50748F182B8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onicorn.CRMApp.Web", "Onicorn.CRMApp.Web\Onicorn.CRMApp.Web.csproj", "{D66E5DB6-5792-409B-8C23-F5038A3B364A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +49,16 @@ Global
 		{983AF0B4-F978-4112-AA74-03E93244A823}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{983AF0B4-F978-4112-AA74-03E93244A823}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{983AF0B4-F978-4112-AA74-03E93244A823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D66E5DB6-5792-409B-8C23-F5038A3B364A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D66E5DB6-5792-409B-8C23-F5038A3B364A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D66E5DB6-5792-409B-8C23-F5038A3B364A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D66E5DB6-5792-409B-8C23-F5038A3B364A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D66E5DB6-5792-409B-8C23-F5038A3B364A} = {118E3E39-70F1-4DA8-A41D-50748F182B8F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8AFB0705-6933-4425-8067-14F0B493D13E}
