@@ -11,5 +11,6 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
     public interface ISaleService
     {
         Task<CustomResponse<IEnumerable<SalesDto>>> GetSalesAsync();
+        Task<CustomResponse<NoContent>> InsertSaleAsync(SaleCreateDto saleCreateDto);
     }
 }

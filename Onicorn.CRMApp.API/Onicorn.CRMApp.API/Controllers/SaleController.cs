@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Onicorn.CRMApp.Business.Services.Interfaces;
+using Onicorn.CRMApp.Dtos.SaleDtos;
 using Onicorn.CRMApp.Shared.ControllerBases;
 
 namespace Onicorn.CRMApp.API.Controllers
@@ -19,6 +20,12 @@ namespace Onicorn.CRMApp.API.Controllers
         public async Task<IActionResult> GetSales()
         {
             return CreateActionResultInstance(await _saleService.GetSalesAsync());
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> InsertSale(SaleCreateDto saleCreateDto)
+        {
+            return CreateActionResultInstance(await _saleService.InsertSaleAsync(saleCreateDto));
         }
     }
 }
