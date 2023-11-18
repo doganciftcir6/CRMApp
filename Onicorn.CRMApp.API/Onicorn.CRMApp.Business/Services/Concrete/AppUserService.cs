@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
@@ -18,12 +19,13 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly ISharedIdentityService _sharedIdentityService;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly IValidator<UpdateAppUserDto> _updateAppUserValidator;
         private readonly IValidator<AppUserChangePasswordDto> _changePasswordValidator;
         private readonly IValidator<RoleAssingSendDto> _roleAssingSendDto;
         private readonly IHostingEnvironment _hostingEnvironment;
-        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment, IValidator<AppUserChangePasswordDto> changePasswordValidator, RoleManager<AppRole> roleManager, IValidator<RoleAssingSendDto> roleAssingSendDto)
+        public AppUserService(UserManager<AppUser> userManager, ISharedIdentityService sharedIdentityService, IMapper mapper, IValidator<UpdateAppUserDto> updateAppUserValidator, IHostingEnvironment hostingEnvironment, IValidator<AppUserChangePasswordDto> changePasswordValidator, RoleManager<AppRole> roleManager, IValidator<RoleAssingSendDto> roleAssingSendDto, IConfiguration configuration)
         {
             _userManager = userManager;
             _sharedIdentityService = sharedIdentityService;
@@ -33,6 +35,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _changePasswordValidator = changePasswordValidator;
             _roleManager = roleManager;
             _roleAssingSendDto = roleAssingSendDto;
+            _configuration = configuration;
         }
 
         public async Task<CustomResponse<NoContent>> AssingRoleAsync(RoleAssingSendDto roleAssingSendDto)
@@ -132,7 +135,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
 
                     if (updateAppUserDto.ImageURL != null && updateAppUserDto.ImageURL.Length > 0)
                     {
-                        string createdFileName = await AppUserImageUploadHelper.Run(_hostingEnvironment, updateAppUserDto.ImageURL, cancellationToken);
+                        string createdFileName = await AppUserImageUploadHelper.Run(_hostingEnvironment, updateAppUserDto.ImageURL, _configuration, cancellationToken);
                         appUser.ImageURL = createdFileName;
                     }
                     else

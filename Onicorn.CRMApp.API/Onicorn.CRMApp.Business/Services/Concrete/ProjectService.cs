@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
@@ -18,9 +19,10 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly IUow _uow;
         private readonly IProjectRepository _projectRepository;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IConfiguration _configuration;
         private readonly IValidator<ProjectCreateDto> _projectCreateDtoValidator;
         private readonly IValidator<ProjectUpdateDto> _projectUpdateDtoValidator;
-        public ProjectService(IMapper mapper, IUow uow, IProjectRepository projectRepository, IValidator<ProjectCreateDto> projectCreateDtoValidator, IHostingEnvironment hostingEnvironment, IValidator<ProjectUpdateDto> projectUpdateDtoValidator)
+        public ProjectService(IMapper mapper, IUow uow, IProjectRepository projectRepository, IValidator<ProjectCreateDto> projectCreateDtoValidator, IHostingEnvironment hostingEnvironment, IValidator<ProjectUpdateDto> projectUpdateDtoValidator, IConfiguration configuration)
         {
             _mapper = mapper;
             _uow = uow;
@@ -28,6 +30,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _projectCreateDtoValidator = projectCreateDtoValidator;
             _hostingEnvironment = hostingEnvironment;
             _projectUpdateDtoValidator = projectUpdateDtoValidator;
+            _configuration = configuration;
         }
 
         public async Task<CustomResponse<ProjectDto>> GetProjectByIdAsync(int projectId)
@@ -55,7 +58,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 Project project = _mapper.Map<Project>(projectCreateDto);
                 if (projectCreateDto.ImageURL != null && projectCreateDto.ImageURL.Length > 0)
                 {
-                    string createdFileName = await ProjectImageUploadHelper.Run(_hostingEnvironment, projectCreateDto.ImageURL, cancellationToken);
+                    string createdFileName = await ProjectImageUploadHelper.Run(_hostingEnvironment, projectCreateDto.ImageURL, _configuration, cancellationToken);
                     project.ImageURL = createdFileName;
                 }
                 project.InsertTime = DateTime.UtcNow;
@@ -97,7 +100,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 Project project = _mapper.Map<Project>(projectUpdateDto);
                 if (projectUpdateDto.ImageURL != null && projectUpdateDto.ImageURL.Length > 0)
                 {
-                    string createdFileName = await ProjectImageUploadHelper.Run(_hostingEnvironment, projectUpdateDto.ImageURL, cancellationToken);
+                    string createdFileName = await ProjectImageUploadHelper.Run(_hostingEnvironment, projectUpdateDto.ImageURL, _configuration, cancellationToken);
                     project.ImageURL = createdFileName;
                 }
                 else

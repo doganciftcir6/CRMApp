@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Onicorn.CRMApp.Business.Helpers.Messages;
 using Onicorn.CRMApp.Business.Helpers.UploadHelpers;
 using Onicorn.CRMApp.Business.Services.Interfaces;
@@ -21,7 +22,8 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         private readonly IValidator<AppUserLoginDto> _AppUserLoginDtoValidator;
         private readonly IMapper _mapper;
         private readonly IHostingEnvironment _hostingEnvironment;
-        public AuthService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IValidator<AppUserRegisterDto> appUserRegisterDtoValidator, IValidator<AppUserLoginDto> appUserLoginDtoValidator, IMapper mapper, IHostingEnvironment hostingEnvironment)
+        private readonly IConfiguration _configuration;
+        public AuthService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IValidator<AppUserRegisterDto> appUserRegisterDtoValidator, IValidator<AppUserLoginDto> appUserLoginDtoValidator, IMapper mapper, IHostingEnvironment hostingEnvironment, IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -29,6 +31,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _AppUserLoginDtoValidator = appUserLoginDtoValidator;
             _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
+            _configuration = configuration;
         }
 
         public async Task<CustomResponse<TokenResponseDto>> LoginAsync(AppUserLoginDto appUserLoginDto)
@@ -62,7 +65,7 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 var appUser = _mapper.Map<AppUser>(appUserRegisterDto);
                 if (appUserRegisterDto.ImageURL != null && appUserRegisterDto.ImageURL.Length > 0)
                 {
-                    string createdFileName = await AppUserImageUploadHelper.Run(_hostingEnvironment, appUserRegisterDto.ImageURL, cancellationToken);
+                    string createdFileName = await AppUserImageUploadHelper.Run(_hostingEnvironment, appUserRegisterDto.ImageURL, _configuration, cancellationToken);
                     appUser.ImageURL = createdFileName;
                 }
 
