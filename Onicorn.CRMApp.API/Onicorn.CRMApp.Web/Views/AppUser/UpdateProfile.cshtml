@@ -1,0 +1,73 @@
+﻿@model AppUserUpdateProfileInput
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card mb-4">
+        <div class="card-header">Account Details</div>
+        <div class="card-body">
+            <form asp-controller="AppUser" asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
+                <!-- Form Row        -->
+                <div asp-validation-summary="ModelOnly">
+                </div>
+                <div class="row gx-3 mb-3">
+                    <!-- Form Group (organization name)-->
+                    <div class="col-md-6">
+                    <span asp-validation-for="@Model.Firstname"></span>
+                        <label class="small mb-1" for="inputFirstname">First name</label>
+                        <input class="form-control" id="inputFirstname" type="text" asp-for="@Model.Firstname">
+                    </div>
+                    <!-- Form Group (location)-->
+                    <div class="col-md-6">
+                    <span asp-validation-for="@Model.Lastname"></span>
+                        <label class="small mb-1" for="inputLastname">Last name</label>
+                        <input class="form-control" id="inputLastname" type="text" asp-for="@Model.Lastname">
+                    </div>
+                </div>
+                <!-- Form Group (email address)-->
+                <span asp-validation-for="@Model.Email"></span>
+                <div class="mb-3">
+                    <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                    <input class="form-control" id="inputEmailAddress" type="email" asp-for="@Model.Email">
+                </div>
+                <!-- Form Row-->
+                <span asp-validation-for="@Model.PhoneNumber"></span>
+                <div class="mb-3">
+                    <label class="small mb-1" for="inputPhoneNumber">Phone Number</label>
+                    <input class="form-control" id="inputPhoneNumber" type="tel" asp-for="@Model.PhoneNumber">
+                </div>
+
+                <div><label class="small mb-1" for="inputImage">Image</label></div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                    </div>
+                    <div class="custom-file">
+                        <input asp-for="@Model.ImageFile" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" onchange="updateFileName()">
+                        <label class="custom-file-label" for="inputGroupFile01" id="fileLabel">
+                            Choose file
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-user justify-content-end">
+                    Update Profile
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateFileName() {
+        var input = document.getElementById('inputGroupFile01');
+        var label = document.getElementById('fileLabel');
+
+        if (input.files.length > 0) {
+            label.innerText = input.files[0].name;
+        } else {
+            label.innerText = 'Choose file';
+        }
+    }
+</script>
