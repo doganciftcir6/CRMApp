@@ -1,0 +1,59 @@
+﻿@model IEnumerable<SalesVM>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/thema/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Sales</h6>
+        </div>
+        <div class="card-body">
+            <a asp-controller="Sale" asp-action="InsertSale" class="text text-white text-uppercase bg-info mb-1">Create a new sale</a>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Customer</th>
+                            <th>Project</th>
+                            <th>SaleSituation</th>
+                            <th>SalesDate</th>
+                            <th>SalesAmount</th>
+                            <th>KDV</th>
+                            <th>TotalSalesAmount</th>
+                            <th>#</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Customer</td>
+                                <td>@item.Project</td>
+                                <td>@item.SaleSituation</td>
+                                <td>@item.SalesDate</td>
+                                <td>@item.SalesAmount</td>
+                                <td>%@item.KDV</td>
+                                <td>@item.TotalSalesAmount</td>
+
+                                <td><a asp-controller="Sale" asp-action="UpdateSale" asp-route-id="@item.Id" class="btn btn-outline-success">Update</a></td>
+                                <td><a asp-controller="Sale" asp-action="RemoveSale" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page level plugins -->
+<script src="~/thema/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="~/thema/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="~/thema/js/demo/datatables-demo.js"></script>
