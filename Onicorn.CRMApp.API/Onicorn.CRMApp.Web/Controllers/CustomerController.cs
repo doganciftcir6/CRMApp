@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net;
 using NuGet.Common;
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
 
 namespace Onicorn.CRMApp.Web.Controllers
 {
@@ -76,7 +77,7 @@ namespace Onicorn.CRMApp.Web.Controllers
                 {
                     var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
                     _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                    var response = await _httpClient.PostAsJsonAsync($"Customer/InsertCustomer", customerCreateInput);
+                    var response = await _httpClient.PostAsJsonAsync("Customer/InsertCustomer", customerCreateInput);
                     if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ModelState.AddModelError("", "Server error. Please try again later.");
@@ -156,6 +157,24 @@ namespace Onicorn.CRMApp.Web.Controllers
                 }
             }
             return View(customerUpdateInput);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveCustomer(int id)
+        {
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var jsonContent = new StringContent("{}", Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsJsonAsync($"Customer/RemoveCustomer/{id}", jsonContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return NotFound();
         }
     }
 }
