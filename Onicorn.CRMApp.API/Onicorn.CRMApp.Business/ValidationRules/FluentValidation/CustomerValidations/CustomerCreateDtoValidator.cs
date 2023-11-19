@@ -17,6 +17,7 @@ namespace Onicorn.CRMApp.Business.ValidationRules.FluentValidation.CustomerValid
             RuleFor(x => x.CompanyName).MaximumLength(100).WithMessage("The company name field can contain a maximum of 100 characters!");
             RuleFor(x => x.Email).NotEmpty().WithMessage("The email date field cannot be empty!");
             RuleFor(x => x.Email).EmailAddress().WithMessage("You did not enter a valid email address!");
+            RuleFor(x => x.Phone).MinimumLength(11).MaximumLength(11).WithMessage("The phone field must contain at least 11 characters!");
             RuleFor(x => x.Address).NotEmpty().WithMessage("The address field cannot be empty!");
             RuleFor(x => x.Address).MinimumLength(2).WithMessage("The address field must contain at least 2 characters!");
             RuleFor(x => x.Address).MaximumLength(200).WithMessage("The address field can contain a maximum of 200 characters!");

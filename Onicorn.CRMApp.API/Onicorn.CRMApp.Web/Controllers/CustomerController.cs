@@ -41,7 +41,10 @@ namespace Onicorn.CRMApp.Web.Controllers
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 var response = await _httpClient.GetAsync($"Customer/GetCustomer/{id}");
                 if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                {
                     ModelState.AddModelError("", "Server error. Please try again later.");
+                    return View();
+                }
 
                 CustomResponse<CustomerDetailVM> customerDetailResponse = await response.Content.ReadFromJsonAsync<CustomResponse<CustomerDetailVM>>();
                 if (customerDetailResponse.IsSuccessful)
@@ -57,6 +60,44 @@ namespace Onicorn.CRMApp.Web.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> InsertCustomer()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> InsertCustomer(CustomerCreateInput customerCreateInput)
+        {
+            if (ModelState.IsValid)
+            {
+                var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+                if (token != null)
+                {
+                    var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var response = await _httpClient.PostAsJsonAsync($"Customer/InsertCustomer", customerCreateInput);
+                    if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ModelState.AddModelError("", "Server error. Please try again later.");
+                        return View(customerCreateInput);
+                    }
+
+                    CustomResponse<NoContent> customerCreateResponse = await response.Content.ReadFromJsonAsync<CustomResponse<NoContent>>();
+                    if (customerCreateResponse.IsSuccessful)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    foreach (var error in customerCreateResponse.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+            }
+            return View(customerCreateInput);
+        }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCustomer(int id)
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
@@ -66,7 +107,10 @@ namespace Onicorn.CRMApp.Web.Controllers
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 var response = await _httpClient.GetAsync($"Customer/GetCustomer/{id}");
                 if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                {
                     ModelState.AddModelError("", "Server error. Please try again later.");
+                    return View();
+                }
 
                 CustomResponse<CustomerUpdateInput> customerDetailResponse = await response.Content.ReadFromJsonAsync<CustomResponse<CustomerUpdateInput>>();
                 if (customerDetailResponse.IsSuccessful)
@@ -95,7 +139,10 @@ namespace Onicorn.CRMApp.Web.Controllers
                     _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                     var response = await _httpClient.PutAsJsonAsync("Customer/UpdateCustomer", customerUpdateInput);
                     if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                    {
                         ModelState.AddModelError("", "Server error. Please try again later.");
+                        return View(customerUpdateInput);
+                    }
 
                     CustomResponse<NoContent> customerUpdateResponse = await response.Content.ReadFromJsonAsync<CustomResponse<NoContent>>();
                     if (customerUpdateResponse.IsSuccessful)

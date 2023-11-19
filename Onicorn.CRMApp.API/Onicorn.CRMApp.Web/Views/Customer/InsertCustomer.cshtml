@@ -1,0 +1,55 @@
+﻿@model CustomerCreateInput
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div asp-validation-summary="ModelOnly"></div>
+    <form asp-controller="Customer" asp-action="InsertCustomer" method="post">
+        <div class="row mb-4">
+            <div class="col">
+                <div class="form-outline">
+                    <span class="text-danger" asp-validation-for="@Model.CompanyName"></span>
+                    <label class="form-label" for="form6Example1">Company name</label>
+                    <input asp-for="@Model.CompanyName" type="text" id="form6Example1" class="form-control" />
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <span class="text-danger" asp-validation-for="@Model.Email"></span>
+                    <label class="form-label" for="form6Example2">Email</label>
+                    <input asp-for="@Model.Email" type="email" id="form6Example2" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.Phone"></span>
+            <label class="form-label" for="form6Example3">Phone</label>
+            <input asp-for="@Model.Phone" type="tel" id="form6Example3" class="form-control" />
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.Province"></span>
+            <label class="form-label" for="form6Example4">Province</label>
+            <input asp-for="@Model.Province" type="text" id="form6Example4" class="form-control" />
+        </div>
+
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.District"></span>
+            <label class="form-label" for="form6Example5">District</label>
+            <input asp-for="@Model.District" type="text" id="form6Example5" class="form-control" />
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.Address"></span>
+            <label class="form-label" for="form6Example7">Address</label>
+            <textarea asp-for="@Model.Address" class="form-control" id="form6Example7" rows="4"></textarea>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Create</button>
+    </form>
+</div>
