@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ProjectsVM>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/thema/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+        </div>
+        <div class="card-body">
+            <a asp-controller="Project" asp-action="InsertProject" class="text text-white text-uppercase bg-info mb-1">Create a new project</a>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>ProjectName</th>
+                            <th>InsertTime</th>
+                            <th>UpdateTime</th>
+                            <th>Status</th>
+                            <th>#</th>
+                            <th>#</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.ProjectName</td>
+                                <td>@item.InsertTime.ToShortDateString()</td>
+                                <td>
+                                    @if (@item.UpdateTime != null)
+                                    {
+                                        @item.UpdateTime
+                                    }
+                                </td>
+                                <td>@item.Status</td>
+                                <td><a asp-controller="Project" asp-action="ProjectDetails" asp-route-id="@item.Id" class="btn btn-outline-warning">Detail</a></td>
+                                <td><a asp-controller="Project" asp-action="UpdateProject" asp-route-id="@item.Id" class="btn btn-outline-success">Update</a></td>
+                                <td><a asp-controller="Project" asp-action="RemoveProject" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page level plugins -->
+<script src="~/thema/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="~/thema/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="~/thema/js/demo/datatables-demo.js"></script>
