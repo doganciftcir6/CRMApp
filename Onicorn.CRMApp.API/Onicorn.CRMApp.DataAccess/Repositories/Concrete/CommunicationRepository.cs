@@ -5,6 +5,7 @@ using Onicorn.CRMApp.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,11 @@ namespace Onicorn.CRMApp.DataAccess.Repositories.Concrete
         public async override Task<IEnumerable<Communication>> GetAllAsync()
         {
             return await _appDbContext.Set<Communication>().Include(x => x.CommunicationType).Include(x => x.Customer).Where(x => x.Status == true).OrderByDescending(x => x.InsertTime).ToListAsync();
+        }
+
+        public override async Task<Communication> GetByFilterAsync(Expression<Func<Communication, bool>> filter)
+        {
+            return await _appDbContext.Set<Communication>().Include(x => x.CommunicationType).Include(x => x.Customer).Where(filter).OrderByDescending(x => x.InsertTime).SingleOrDefaultAsync();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
     public interface ICommunicationService
     {
         Task<CustomResponse<IEnumerable<CommunicationDto>>> GetCommunicatiosAsync();
+        Task<CustomResponse<CommunicationDto>> GetCommunicationByIdAsync(int id);
         Task<CustomResponse<NoContent>> InsertCommunicationAsync(CommunicationCreateDto communicationCreateDto);
         Task<CustomResponse<NoContent>> UpdateCommunicationAsync(CommunicationUpdateDto communicationUpdateDto);
         Task<CustomResponse<NoContent>> RemoveCommunicationAsync(int communicationId);

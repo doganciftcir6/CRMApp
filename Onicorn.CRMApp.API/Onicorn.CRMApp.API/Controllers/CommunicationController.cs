@@ -25,6 +25,13 @@ namespace Onicorn.CRMApp.API.Controllers
             return CreateActionResultInstance(await _communicationService.GetCommunicatiosAsync());
         }
 
+        [Authorize]
+        [HttpGet("[action]/{communicationId}")]
+        public async Task<IActionResult> GetCommunicationById(int communicationId)
+        {
+            return CreateActionResultInstance(await _communicationService.GetCommunicationByIdAsync(communicationId));
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> InsertCommunication(CommunicationCreateDto communicationCreateDto)

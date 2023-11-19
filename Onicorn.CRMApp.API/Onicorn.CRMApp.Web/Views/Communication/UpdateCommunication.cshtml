@@ -1,0 +1,58 @@
+﻿@using System.Text.Json;
+@model CommunicationUpdateInput
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div asp-validation-summary="ModelOnly"></div>
+    <form asp-controller="Communication" asp-action="UpdateCommunication" method="post">
+        <input type="hidden" asp-for="@Model.Id"/>
+
+        @{
+            TempData["customers"] = JsonSerializer.Serialize(Model.Customers);
+            TempData["communicationTypes"] = JsonSerializer.Serialize(Model.CommunicationTypes);
+        }
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.Detail"></span>
+            <label class="form-label" for="form6Example7">Detail</label>
+            <textarea asp-for="@Model.Detail" class="form-control" id="form6Example7" rows="4"></textarea>
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.CommunicationDate"></span>
+            <label class="form-label" for="form6Example3">Phone</label>
+            <input asp-for="@Model.CommunicationDate" type="date" id="form6Example3" class="form-control" />
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Customer</label>
+            </div>
+            <select asp-items="@Model.Customers" asp-for="@Model.CustomerId" class="custom-select" id="inputGroupSelect01">
+            </select>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">CommunicationType</label>
+            </div>
+            <select asp-items="@Model.CommunicationTypes" asp-for="@Model.CommunicationTypeId" class="custom-select" id="inputGroupSelect01">
+            </select>
+        </div>
+
+        <div class="form-group">
+            <div class="custom-control custom-checkbox small">
+                <input type="checkbox" class="custom-control-input" id="customCheck" asp-for="@Model.Status">
+                <label class="custom-control-label" for="customCheck">
+                    Status
+                </label>
+            </div>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Update</button>
+    </form>
+</div>
