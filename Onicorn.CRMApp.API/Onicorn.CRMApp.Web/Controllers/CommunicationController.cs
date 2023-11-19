@@ -7,6 +7,7 @@ using Onicorn.CRMApp.Shared.Utilities.Response;
 using Onicorn.CRMApp.Web.Models;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 
 namespace Onicorn.CRMApp.Web.Controllers
@@ -37,6 +38,7 @@ namespace Onicorn.CRMApp.Web.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> InsertCommunication()
         {
             CommunicationCreateInput communicationCreateInput = new CommunicationCreateInput();
@@ -60,6 +62,7 @@ namespace Onicorn.CRMApp.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> InsertCommunication(CommunicationCreateInput communicationCreateInput)
         {
             if (ModelState.IsValid)
@@ -99,6 +102,7 @@ namespace Onicorn.CRMApp.Web.Controllers
             return View(communicationCreateInput);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCommunication(int id)
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
@@ -125,6 +129,7 @@ namespace Onicorn.CRMApp.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCommunication(CommunicationUpdateInput communicationUpdateInput)
         {
             if (ModelState.IsValid)
@@ -163,6 +168,24 @@ namespace Onicorn.CRMApp.Web.Controllers
                 communicationUpdateInput.CommunicationTypes = new SelectList(communicationTypes, "Value", "Text");
             }
             return View(communicationUpdateInput);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveCommunication(int id)
+        {
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var jsonContent = new StringContent("{}", Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsJsonAsync($"Communication/DeleteCommunication/{id}", jsonContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return NotFound();
         }
     }
 }
