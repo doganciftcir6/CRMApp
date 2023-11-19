@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Onicorn.CRMApp.Shared.Utilities.Response;
 using Onicorn.CRMApp.Web.Models;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 
 namespace Onicorn.CRMApp.Web.Controllers
@@ -175,6 +176,24 @@ namespace Onicorn.CRMApp.Web.Controllers
                 saleUpdateInput.SaleSituations = new SelectList(saleSituations, "Value", "Text");
             }
             return View(saleUpdateInput);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveSale(int id)
+        {
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var jsonContent = new StringContent("{}", Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsJsonAsync($"Sale/RemoveSale/{id}", jsonContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return NotFound();
         }
     }
 }
