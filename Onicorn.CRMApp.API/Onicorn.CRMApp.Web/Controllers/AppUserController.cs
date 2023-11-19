@@ -104,5 +104,39 @@ namespace Onicorn.CRMApp.Web.Controllers
             }
             return View(appUserUpdateProfileInput);
         }
+
+        public async Task<IActionResult> ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(AppUserChangePasswordInput appUserChangePasswordInput)
+        {
+            if (ModelState.IsValid)
+            {
+                var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+                if (token != null)
+                {
+                    var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var response = await _httpClient.PutAsJsonAsync("AppUser/ChangePassword", appUserChangePasswordInput);
+                    if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                        ModelState.AddModelError("", "Server error. Please try again later.");
+
+                    CustomResponse<NoContent> changePasswordResponse = await response.Content.ReadFromJsonAsync<CustomResponse<NoContent>>();
+                    if (changePasswordResponse.IsSuccessful)
+                    {
+                        TempData["success"] = "Password changed successfully";
+                        return View();
+                    }
+                    foreach (var error in changePasswordResponse.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+            }
+            return View(appUserChangePasswordInput);
+        }
     }
 }
