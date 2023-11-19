@@ -26,6 +26,17 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             _saleUpdateDtoValidator = saleUpdateDtoValidator;
         }
 
+        public async Task<CustomResponse<SalesDto>> GetSaleByIdAsync(int saleId)
+        {
+            SalesDto salesDto = _mapper.Map<SalesDto>(await _saleRepository.GetByFilterAsync(x => x.Status == true && x.Id == saleId));
+            if (salesDto is not null)
+            {
+                return CustomResponse<SalesDto>.Success(salesDto, ResponseStatusCode.OK);
+
+            }
+            return CustomResponse<SalesDto>.Fail(SaleMessages.NOT_FOUND_SALE, ResponseStatusCode.NOT_FOUND);
+        }
+
         public async Task<CustomResponse<IEnumerable<SalesDto>>> GetSalesAsync()
         {
             IEnumerable<SalesDto> salesDtos = _mapper.Map<IEnumerable<SalesDto>>(await _saleRepository.GetAllFilterAsync(x => x.Status == true));

@@ -24,6 +24,12 @@ namespace Onicorn.CRMApp.API.Controllers
             return CreateActionResultInstance(await _saleService.GetSalesAsync());
         }
 
+        [HttpGet("[action]/{saleId}")]
+        public async Task<IActionResult> GetSaleById(int saleId)
+        {
+            return CreateActionResultInstance(await _saleService.GetSaleByIdAsync(saleId));
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> InsertSale(SaleCreateDto saleCreateDto)

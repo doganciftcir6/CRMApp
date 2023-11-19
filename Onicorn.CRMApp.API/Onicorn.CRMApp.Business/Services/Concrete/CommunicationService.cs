@@ -29,7 +29,12 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
         public async Task<CustomResponse<CommunicationDto>> GetCommunicationByIdAsync(int id)
         {
             CommunicationDto tasksDtos = _mapper.Map<CommunicationDto>(await _communicationRepository.GetByFilterAsync(x => x.Status == true && x.Id == id));
-            return CustomResponse<CommunicationDto>.Success(tasksDtos, ResponseStatusCode.OK);
+            if (tasksDtos is not null)
+            {
+                return CustomResponse<CommunicationDto>.Success(tasksDtos, ResponseStatusCode.OK);
+
+            }
+            return CustomResponse<CommunicationDto>.Fail(CommunicationMessages.NOT_FOUND_COMMUNİCATİON, ResponseStatusCode.NOT_FOUND);
         }
 
         public async Task<CustomResponse<IEnumerable<CommunicationDto>>> GetCommunicatiosAsync()
