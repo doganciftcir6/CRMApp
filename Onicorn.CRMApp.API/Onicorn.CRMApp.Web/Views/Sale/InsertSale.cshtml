@@ -1,0 +1,56 @@
+﻿@using System.Text.Json;
+@model SaleCreateInput
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div asp-validation-summary="ModelOnly"></div>
+    <form asp-controller="Sale" asp-action="InsertSale" method="post">
+        @{
+            TempData["customers"] = JsonSerializer.Serialize(Model.Customers);
+            TempData["projects"] = JsonSerializer.Serialize(Model.Projects);
+            TempData["saleSituations"] = JsonSerializer.Serialize(Model.SaleSituations);
+        }
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.SalesAmount"></span>
+            <label class="form-label" for="form6Example3">Sales Amount</label>
+            <input asp-for="@Model.SalesAmount" type="number" id="form6Example3" class="form-control" />
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.SalesDate"></span>
+            <label class="form-label" for="form6Example3">Sales Date</label>
+            <input asp-for="@Model.SalesDate" type="date" id="form6Example3" class="form-control" />
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Customer</label>
+            </div>
+            <select asp-items="@Model.Customers" asp-for="@Model.CustomerId" class="custom-select" id="inputGroupSelect01">
+            </select>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Project</label>
+            </div>
+            <select asp-items="@Model.Projects" asp-for="@Model.ProjectId" class="custom-select" id="inputGroupSelect01">
+            </select>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Sale Situations</label>
+            </div>
+            <select asp-items="@Model.SaleSituations" asp-for="@Model.SaleSituationId" class="custom-select" id="inputGroupSelect01">
+            </select>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Create</button>
+    </form>
+</div>

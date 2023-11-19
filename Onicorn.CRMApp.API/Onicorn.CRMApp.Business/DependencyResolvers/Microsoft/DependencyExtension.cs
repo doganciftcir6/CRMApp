@@ -67,6 +67,7 @@ namespace Onicorn.CRMApp.Business.DependencyResolvers.Microsoft
             services.AddScoped<ITaskService, TaskService>();
             services.AddScoped<IGenderService, GenderService>();
             services.AddScoped<ICommunicationTypeService, CommunicationTypeService>();
+            services.AddScoped<ISaleSituationService, SaleSituationService>();
 
             services.AddScoped<ICommunicationRepository, CommunicationRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
