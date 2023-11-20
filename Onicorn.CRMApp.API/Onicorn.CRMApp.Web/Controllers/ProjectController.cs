@@ -58,5 +58,55 @@ namespace Onicorn.CRMApp.Web.Controllers
             }
             return View();
         }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> InsertProject()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> InsertProject(ProjectCreateInput projectCreateInput)
+        {
+            if (ModelState.IsValid)
+            {
+                var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+                if (token != null)
+                {
+                    var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var multipartContent = new MultipartFormDataContent();
+                    if (projectCreateInput.ImageURL is not null)
+                    {
+                        using var ms = new MemoryStream();
+                        ms.Position = 0;
+                        await projectCreateInput.ImageURL.CopyToAsync(ms);
+                        multipartContent.Add(new ByteArrayContent(ms.ToArray()), "ImageURL", projectCreateInput.ImageURL.FileName);
+                    }
+                    multipartContent.Add(new StringContent(projectCreateInput.ProjectName), "ProjectName");
+                    multipartContent.Add(new StringContent(projectCreateInput.Description), "Description");
+                    multipartContent.Add(new StringContent(projectCreateInput.Price.ToString()), "Price");
+
+                    var response = await _httpClient.PostAsync("Project/InsertProject", multipartContent);
+                    if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ModelState.AddModelError("", "Server error. Please try again later.");
+                        return View(projectCreateInput);
+                    }
+
+                    CustomResponse<NoContent> insertProjectResponse = await response.Content.ReadFromJsonAsync<CustomResponse<NoContent>>();
+                    if (insertProjectResponse.IsSuccessful)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    foreach (var error in insertProjectResponse.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+            }
+            return View(projectCreateInput);
+        }
     }
 }

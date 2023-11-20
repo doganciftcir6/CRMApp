@@ -1,0 +1,57 @@
+﻿@using System.Text.Json;
+@model ProjectCreateInput
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div asp-validation-summary="ModelOnly"></div>
+    <form asp-controller="Project" asp-action="InsertProject" method="post" enctype="multipart/form-data">
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.ProjectName"></span>
+            <label class="form-label" for="form6Example3">Project Name</label>
+            <input asp-for="@Model.ProjectName" type="text" id="form6Example3" class="form-control" />
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.Description"></span>
+            <label class="form-label" for="form6Example7">Description</label>
+            <textarea asp-for="@Model.Description" class="form-control" id="form6Example7" rows="4"></textarea>
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.Price"></span>
+            <label class="form-label" for="form6Example3">Price</label>
+            <input asp-for="@Model.Price" type="number" id="form6Example3" class="form-control" />
+        </div>
+
+        <div class="input-group mb-4">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+            </div>
+            <div class="custom-file">
+                <input asp-for="@Model.ImageURL" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" onchange="updateFileName()">
+                <label class="custom-file-label" for="inputGroupFile01" id="fileLabel">
+                    Choose file
+                </label>
+            </div>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Create</button>
+    </form>
+</div>
+
+<script>
+    function updateFileName() {
+        var input = document.getElementById('inputGroupFile01');
+        var label = document.getElementById('fileLabel');
+
+        if (input.files.length > 0) {
+            label.innerText = input.files[0].name;
+        } else {
+            label.innerText = 'Choose file';
+        }
+    }
+</script>
