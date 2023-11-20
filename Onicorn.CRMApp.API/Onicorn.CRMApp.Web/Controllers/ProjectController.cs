@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Onicorn.CRMApp.Shared.Utilities.Response;
 using Onicorn.CRMApp.Web.Models;
 using System.Net;
@@ -108,5 +109,71 @@ namespace Onicorn.CRMApp.Web.Controllers
             }
             return View(projectCreateInput);
         }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateProject(int id)
+        {
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var response = await _httpClient.GetAsync($"Project/GetProject/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    CustomResponse<ProjectUpdateInput> project = await response.Content.ReadFromJsonAsync<CustomResponse<ProjectUpdateInput>>();
+                    return View(project.Data);
+                }
+            }
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateProject(ProjectUpdateInput projectUpdateInput)
+        {
+            if (ModelState.IsValid)
+            {
+                var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+                if (token != null)
+                {
+                    var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var multipartContent = new MultipartFormDataContent();
+                    if (projectUpdateInput.ImageFile is not null)
+                    {
+                        using var ms = new MemoryStream();
+                        ms.Position = 0;
+                        await projectUpdateInput.ImageFile.CopyToAsync(ms);
+                        multipartContent.Add(new ByteArrayContent(ms.ToArray()), "ImageURL", projectUpdateInput.ImageFile.FileName);
+                    }
+                    multipartContent.Add(new StringContent(projectUpdateInput.Id.ToString()), "Id");
+                    multipartContent.Add(new StringContent(projectUpdateInput.ProjectName), "ProjectName");
+                    multipartContent.Add(new StringContent(projectUpdateInput.Description), "Description");
+                    multipartContent.Add(new StringContent(projectUpdateInput.Price.ToString()), "Price");
+                    multipartContent.Add(new StringContent(projectUpdateInput.Status.ToString()), "Status");
+
+                    var response = await _httpClient.PutAsync("Project/UpdateProject", multipartContent);
+                    if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ModelState.AddModelError("", "Server error. Please try again later.");
+                        return View(projectUpdateInput);
+                    }
+
+                    CustomResponse<NoContent> updateProjectResponse = await response.Content.ReadFromJsonAsync<CustomResponse<NoContent>>();
+                    if (updateProjectResponse.IsSuccessful)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    foreach (var error in updateProjectResponse.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+            }
+            return View(projectUpdateInput);
+        }
     }
 }
+
+

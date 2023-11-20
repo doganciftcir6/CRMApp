@@ -10,8 +10,8 @@
         @foreach (var item in Model)
         {
             <div class="col-md-4 mb-4">
-                <div class="card" style="max-width: 18rem; max-height: 30rem;">
-                    <img src="@item.ImageURL" class="card-img-top" alt="Project Image">
+                <div class="card" style="max-width: 18rem;">
+                    <img src="@item.ImageURL" class="card-img-top" alt="Project Image" style="height: 200px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title">@item.ProjectName</h5>
                         <p class="card-text">@item.InsertTime.ToShortDateString()</p>
