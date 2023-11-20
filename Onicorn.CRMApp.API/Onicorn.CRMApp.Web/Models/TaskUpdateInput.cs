@@ -16,10 +16,12 @@ namespace Onicorn.CRMApp.Web.Models
 
         [Required(ErrorMessage = "The task situation field is required.")]
         public int TaskSituationId { get; set; }
+        public string? TaskSituation { get; set; }
         public SelectList? TaskSituations { get; set; }
         [Required(ErrorMessage = "The app user field is required.")]
         public int AppUserId { get; set; }
         public SelectList? AppUsers { get; set; }
+        public string? AppUser { get; set; }
         public DateTime? FinishDate { get; set; }
         public bool Status { get; set; }
     }

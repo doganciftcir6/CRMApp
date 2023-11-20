@@ -14,12 +14,15 @@ namespace Onicorn.CRMApp.Web.Models
 
         [Required(ErrorMessage = "The customer field is required.")]
         public int CustomerId { get; set; }
+        public string? Customer { get; set; }
         public SelectList? Customers { get; set; }
         [Required(ErrorMessage = "The project field is required.")]
         public int ProjectId { get; set; }
+        public string? Project { get; set; }
         public SelectList? Projects { get; set; }
         [Required(ErrorMessage = "The sale situation field is required.")]
         public int SaleSituationId { get; set; }
+        public string? SaleSituation { get; set; }
         public SelectList? SaleSituations { get; set; }
         public bool Status { get; set; }
     }

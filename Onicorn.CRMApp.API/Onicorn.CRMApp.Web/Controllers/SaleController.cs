@@ -123,9 +123,19 @@ namespace Onicorn.CRMApp.Web.Controllers
                     CustomResponse<IEnumerable<CustomersVM>> customers = await customerResponse.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<CustomersVM>>>();
                     CustomResponse<IEnumerable<SaleSituationVM>> saleSituations = await saleSituationResponse.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<SaleSituationVM>>>();
 
-                    sale.Data.Customers = new SelectList(customers.Data, "Id", "CompanyName");
-                    sale.Data.Projects = new SelectList(projects.Data, "Id", "ProjectName");
-                    sale.Data.SaleSituations = new SelectList(saleSituations.Data, "Id", "Definition");
+                    var selectedProject = projects.Data.FirstOrDefault(x => x.ProjectName == sale.Data.Project);
+                    var selectedCustomer = customers.Data.FirstOrDefault(x => x.CompanyName == sale.Data.Customer);
+                    var selectedSaleSituation = saleSituations.Data.FirstOrDefault(x => x.Definition == sale.Data.SaleSituation);
+                    if (selectedProject is not null && selectedCustomer is not null && selectedSaleSituation is not null)
+                    {
+                        sale.Data.ProjectId = selectedProject.Id;
+                        sale.Data.CustomerId = selectedCustomer.Id;
+                        sale.Data.SaleSituationId = selectedSaleSituation.Id;
+                    }
+
+                    sale.Data.Customers = new SelectList(customers.Data, "Id", "CompanyName", sale.Data.CustomerId);
+                    sale.Data.Projects = new SelectList(projects.Data, "Id", "ProjectName", sale.Data.ProjectId);
+                    sale.Data.SaleSituations = new SelectList(saleSituations.Data, "Id", "Definition", sale.Data.SaleSituationId);
 
                     return View(sale.Data);
                 }

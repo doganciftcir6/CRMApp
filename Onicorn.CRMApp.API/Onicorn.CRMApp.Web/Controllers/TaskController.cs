@@ -160,8 +160,16 @@ namespace Onicorn.CRMApp.Web.Controllers
                     CustomResponse<IEnumerable<TaskSituationVM>> taskSituations = await taskSituationsResponse.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<TaskSituationVM>>>();
                     CustomResponse<IEnumerable<AppUserProfileVM>> appUsers = await appUsersResponse.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<AppUserProfileVM>>>();
 
-                    task.Data.AppUsers = new SelectList(appUsers.Data, "Id", "Fullname");
-                    task.Data.TaskSituations = new SelectList(taskSituations.Data, "Id", "Definition");
+                    var selectedTaskSituation = taskSituations.Data.FirstOrDefault(x => x.Definition == task.Data.TaskSituation);
+                    var selectedAppUser = appUsers.Data.FirstOrDefault(x => x.Fullname == task.Data.AppUser);
+                    if (selectedTaskSituation is not null && selectedAppUser is not null)
+                    {
+                        task.Data.TaskSituationId = selectedTaskSituation.Id;
+                        task.Data.AppUserId = selectedAppUser.Id;
+                    }
+
+                    task.Data.AppUsers = new SelectList(appUsers.Data, "Id", "Fullname", task.Data.AppUserId);
+                    task.Data.TaskSituations = new SelectList(taskSituations.Data, "Id", "Definition", task.Data.TaskSituationId);
                     return View(task.Data);
                 }
 

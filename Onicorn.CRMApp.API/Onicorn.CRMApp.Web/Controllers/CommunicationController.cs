@@ -119,8 +119,16 @@ namespace Onicorn.CRMApp.Web.Controllers
                     CustomResponse<IEnumerable<CommunicationTypeVM>> communicationTypes = await communicationTypeResponse.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<CommunicationTypeVM>>>();
                     CustomResponse<IEnumerable<CustomersVM>> customers = await customerResponse.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<CustomersVM>>>();
 
-                    communication.Data.Customers = new SelectList(customers.Data, "Id", "CompanyName");
-                    communication.Data.CommunicationTypes = new SelectList(communicationTypes.Data, "Id", "Definition");
+                    var selectedCommunicationType = communicationTypes.Data.FirstOrDefault(x => x.Definition == communication.Data.CommunicationType);
+                    var selectedCustomer = customers.Data.FirstOrDefault(x => x.CompanyName == communication.Data.Customer);
+                    if (selectedCommunicationType is not null && selectedCustomer is not null)
+                    {
+                        communication.Data.CustomerId = selectedCustomer.Id;
+                        communication.Data.CommunicationTypeId = selectedCommunicationType.Id;
+                    }
+
+                    communication.Data.Customers = new SelectList(customers.Data, "Id", "CompanyName", communication.Data.CustomerId);
+                    communication.Data.CommunicationTypes = new SelectList(communicationTypes.Data, "Id", "Definition", communication.Data.CommunicationTypeId);
 
                     return View(communication.Data);
                 }

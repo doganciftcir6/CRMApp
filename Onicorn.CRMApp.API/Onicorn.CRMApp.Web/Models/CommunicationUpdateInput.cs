@@ -12,9 +12,11 @@ namespace Onicorn.CRMApp.Web.Models
         public string? Detail { get; set; }
         [Required(ErrorMessage = "The customer field is required.")]
         public int CustomerId { get; set; }
+        public string? Customer { get; set; }
         public SelectList? Customers { get; set; }
         [Required(ErrorMessage = "The communication type field is required.")]
         public int CommunicationTypeId { get; set; }
+        public string? CommunicationType { get; set; }
         public SelectList? CommunicationTypes { get; set; }
         public bool Status { get; set; }
     }
