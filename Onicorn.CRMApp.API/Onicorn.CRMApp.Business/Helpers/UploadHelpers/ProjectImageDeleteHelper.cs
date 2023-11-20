@@ -4,6 +4,7 @@ using Onicorn.CRMApp.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -16,7 +17,9 @@ namespace Onicorn.CRMApp.Business.Helpers.UploadHelpers
         {
             try
             {
-                string path = Path.Combine(hostingEnvironment.WebRootPath, "ProjectImages", file);
+                int index = file.IndexOf("ProjectImages/");
+                string relativeFileName = index != -1 ? file.Substring(index + "ProjectImages/".Length) : file;
+                string path = Path.Combine(hostingEnvironment.WebRootPath, "ProjectImages", relativeFileName);
                 if (File.Exists(path))
                 {
                     File.Delete(path);

@@ -76,12 +76,12 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             if (project != null)
             {
                 project.Status = false;
-                _uow.GetRepository<Project>().Update(project);
                 if (project.ImageURL != null && project.ImageURL.Length != 0)
                 {
                     ProjectImageDeleteHelper.Delete(_hostingEnvironment, project.ImageURL);
-                    project.ImageURL = null;
+                    project.ImageURL = String.Empty;
                 }
+                _uow.GetRepository<Project>().Update(project);
                 await _uow.SaveChangesAsync();
                 return CustomResponse<NoContent>.Success(ResponseStatusCode.OK);
             }
