@@ -1,0 +1,53 @@
+﻿@using System.Text.Json;
+@model TaskCreateInput
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div asp-validation-summary="ModelOnly"></div>
+    <form asp-controller="Task" asp-action="InsertTask" method="post">
+        @{
+            TempData["appUsers"] = JsonSerializer.Serialize(Model.AppUsers);
+            TempData["taskSituations"] = JsonSerializer.Serialize(Model.TaskSituations);
+        }
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.Taskname"></span>
+            <label class="form-label" for="form6Example3">Task Name</label>
+            <input asp-for="@Model.Taskname" type="text" id="form6Example3" class="form-control" />
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.Description"></span>
+            <label class="form-label" for="form6Example7">Description</label>
+            <textarea asp-for="@Model.Description" class="form-control" id="form6Example7" rows="4"></textarea>
+        </div>
+
+        <div class="form-outline mb-4">
+            <span class="text-danger" asp-validation-for="@Model.StartDate"></span>
+            <label class="form-label" for="form6Example3">StartDate</label>
+            <input asp-for="@Model.StartDate" type="date" id="form6Example3" class="form-control" />
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Customer</label>
+            </div>
+            <select asp-items="@Model.AppUsers" asp-for="@Model.AppUserId" class="custom-select" id="inputGroupSelect01">
+            </select>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">CommunicationType</label>
+            </div>
+            <select asp-items="@Model.TaskSituations" asp-for="@Model.TaskSituationId" class="custom-select" id="inputGroupSelect01">
+            </select>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Create</button>
+    </form>
+</div>

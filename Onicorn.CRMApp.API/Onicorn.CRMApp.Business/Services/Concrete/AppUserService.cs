@@ -86,6 +86,12 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
             return CustomResponse<NoContent>.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList(), ResponseStatusCode.BAD_REQUEST);
         }
 
+        public async Task<CustomResponse<IEnumerable<AppUserDto>>> GetAppUsersAsync()
+        {
+            IEnumerable<AppUserDto> appUserDto = _mapper.Map<IEnumerable<AppUserDto>>(await _userManager.Users.ToListAsync());
+            return CustomResponse<IEnumerable<AppUserDto>>.Success(appUserDto, ResponseStatusCode.OK);
+        }
+
         public async Task<CustomResponse<AppUserDto>> GetProfileAsync()
         {
             var userInfo = await _userManager.Users.Include(u => u.Gender).FirstOrDefaultAsync(u => u.Id == _sharedIdentityService.GetUserId);

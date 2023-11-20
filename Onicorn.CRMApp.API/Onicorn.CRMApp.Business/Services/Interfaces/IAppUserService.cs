@@ -11,6 +11,7 @@ namespace Onicorn.CRMApp.Business.Services.Interfaces
     public interface IAppUserService
     {
         Task<CustomResponse<AppUserDto>> GetProfileAsync();
+        Task<CustomResponse<IEnumerable<AppUserDto>>> GetAppUsersAsync();
         Task<CustomResponse<NoContent>> UpdateProfileAsync(UpdateAppUserDto updateAppUserDto, CancellationToken cancellationToken);
         Task<CustomResponse<NoContent>> ChangePasswordAsync(AppUserChangePasswordDto appUserChangePassword);
         Task<CustomResponse<List<RoleDto>>> GetRolesAsync(string userId);
