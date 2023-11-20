@@ -132,5 +132,11 @@ namespace Onicorn.CRMApp.Web.Controllers
             }
             return View(appUserRegisterInput);
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
