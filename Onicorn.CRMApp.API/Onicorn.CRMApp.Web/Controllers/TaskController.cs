@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Onicorn.CRMApp.Shared.Utilities.Response;
 using Onicorn.CRMApp.Web.Models;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 
 namespace Onicorn.CRMApp.Web.Controllers
@@ -29,6 +30,33 @@ namespace Onicorn.CRMApp.Web.Controllers
                 {
                     CustomResponse<IEnumerable<TasksVM>> tasksResponse = await response.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<TasksVM>>>();
                     return View(tasksResponse.Data);
+                }
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> TaskDetails(int id)
+        {
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var response = await _httpClient.GetAsync($"Task/GetTask/{id}");
+                if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    ModelState.AddModelError("", "Server error. Please try again later.");
+                    return View();
+                }
+
+                CustomResponse<TaskDetailVM> taskDetailResponse = await response.Content.ReadFromJsonAsync<CustomResponse<TaskDetailVM>>();
+                if (taskDetailResponse.IsSuccessful)
+                {
+                    return View(taskDetailResponse.Data);
+                }
+                foreach (var error in taskDetailResponse.Errors)
+                {
+                    ModelState.AddModelError("", error);
                 }
             }
             return View();
@@ -181,6 +209,24 @@ namespace Onicorn.CRMApp.Web.Controllers
                 taskUpdateInput.TaskSituations = new SelectList(taskSituations, "Value", "Text");
             }
             return View(taskUpdateInput);
+        }
+
+        [Authorize(Roles = "Admin, ProjectManager")]
+        public async Task<IActionResult> RemoveTask(int id)
+        {
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var jsonContent = new StringContent("{}", Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsJsonAsync($"Task/RemoveTask/{id}", jsonContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return NotFound();
         }
     }
 }

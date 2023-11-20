@@ -1,0 +1,98 @@
+﻿@model TaskDetailVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="tab-content">
+    <div class="tab-pane active" id="home">
+        <hr>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>Id</h4></label>
+                            <input type="text" class="form-control" asp-for="@Model.Id">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>Taskname</h4></label>
+                            <input type="text" class="form-control" asp-for="@Model.Taskname">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>Description</h4></label>
+                            <textarea type="text" class="form-control" asp-for="@Model.Description"> </textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>AppUser</h4></label>
+                            <input type="text" class="form-control" asp-for="@Model.AppUser">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>TaskSituation</h4></label>
+                            <input type="text" class="form-control" asp-for="@Model.TaskSituation">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>StartDate</h4></label>
+                            <input type="text" class="form-control" asp-for="@Model.StartDate">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>FinishDate</h4></label>
+                            <input type="text" class="form-control" asp-for="@Model.FinishDate">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>UpdateTime</h4></label>
+                            <input type="text" class="form-control" asp-for="@Model.UpdateTime">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label><h4>Status</h4></label>
+                            <input type="text" class="form-control" asp-for="@Model.Status">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
