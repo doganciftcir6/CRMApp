@@ -1,0 +1,59 @@
+﻿@model ProjectDetailVM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<section class="section" id="product">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-4 ml-3">
+                <img src="@Model.ImageURL" style="max-width: 30rem; max-height: 40rem;" />
+            </div>
+            <div class="col-md-3">
+                <div class="right-content">
+                    <h2>@Model.ProjectName</h2>
+                    <span>@Model.Description</span>
+                    <hr />
+                    <div class="quantity-content">
+                        <div class="left-content mt-1">
+                            <h5>Price</h5>
+                        </div>
+                        <div class="right-content">
+                            <h6>@Model.Price</h6>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="quantity-content">
+                        <div class="left-content mt-1">
+                            <h5>InsertTime</h5>
+                        </div>
+                        <div class="right-content">
+                            <h6>@Model.InsertTime</h6>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="quantity-content">
+                        <div class="left-content mt-1">
+                            <h5>UpdateTime</h5>
+                        </div>
+                        <div class="right-content">
+                            <h6>@Model.UpdateTime</h6>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="quantity-content">
+                        <div class="left-content mt-1">
+                            <h5>Status</h5>
+                        </div>
+                        <div class="right-content">
+                            <h6>@Model.Status</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+</section>

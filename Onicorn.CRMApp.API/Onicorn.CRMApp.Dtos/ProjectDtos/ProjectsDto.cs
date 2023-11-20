@@ -12,6 +12,7 @@ namespace Onicorn.CRMApp.Dtos.ProjectDtos
         public string? ProjectName { get; set; }
         public DateTime InsertTime { get; set; }
         public DateTime? UpdateTime { get; set; }
+        public string? ImageURL { get; set; }
         public bool Status { get; set; }
     }
 }
