@@ -51,7 +51,7 @@ namespace Onicorn.CRMApp.Web.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public async Task<IActionResult> InsertTask()
         {
             TaskCreateInput taskCreateInput = new TaskCreateInput();
@@ -74,7 +74,7 @@ namespace Onicorn.CRMApp.Web.Controllers
             return View(taskCreateInput);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost]
         public async Task<IActionResult> InsertTask(TaskCreateInput taskCreateInput)
         {
@@ -114,5 +114,74 @@ namespace Onicorn.CRMApp.Web.Controllers
             }
             return View(taskCreateInput);
         }
+
+        [Authorize(Roles = "Admin, ProjectManager")]
+        public async Task<IActionResult> UpdateTask(int id)
+        {
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var response = await _httpClient.GetAsync($"Task/GetTask/{id}");
+                var taskSituationsResponse = await _httpClient.GetAsync("TaskSituation/GetTaskSituations");
+                var appUsersResponse = await _httpClient.GetAsync("AppUser/GetAppUsers");
+                if (taskSituationsResponse.IsSuccessStatusCode && appUsersResponse.IsSuccessStatusCode && response.IsSuccessStatusCode)
+                {
+                    CustomResponse<TaskUpdateInput> task = await response.Content.ReadFromJsonAsync<CustomResponse<TaskUpdateInput>>();
+                    CustomResponse<IEnumerable<TaskSituationVM>> taskSituations = await taskSituationsResponse.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<TaskSituationVM>>>();
+                    CustomResponse<IEnumerable<AppUserProfileVM>> appUsers = await appUsersResponse.Content.ReadFromJsonAsync<CustomResponse<IEnumerable<AppUserProfileVM>>>();
+
+                    task.Data.AppUsers = new SelectList(appUsers.Data, "Id", "Fullname");
+                    task.Data.TaskSituations = new SelectList(taskSituations.Data, "Id", "Definition");
+                    return View(task.Data);
+                }
+
+            }
+            return View();
+        }
+
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateTask(TaskUpdateInput taskUpdateInput)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+                if (token != null)
+                {
+                    var _httpClient = _httpClientFactory.CreateClient("MyApiClient");
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var response = await _httpClient.PutAsJsonAsync("Task/UpdateTask", taskUpdateInput);
+                    if (response is null || response.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ModelState.AddModelError("", "Server error. Please try again later.");
+                        return View(taskUpdateInput);
+                    }
+
+                    CustomResponse<NoContent> taskUpdateResponse = await response.Content.ReadFromJsonAsync<CustomResponse<NoContent>>();
+                    if (taskUpdateResponse.IsSuccessful)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    foreach (var error in taskUpdateResponse.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+            }
+            var appUsersData = TempData["appUsers"]?.ToString();
+            var taskSituationsData = TempData["taskSituations"]?.ToString();
+            if (appUsersData != null || taskSituationsData != null)
+            {
+                var appUsers = JsonSerializer.Deserialize<List<SelectListItem>>(appUsersData);
+                var taskSituations = JsonSerializer.Deserialize<List<SelectListItem>>(taskSituationsData);
+                taskUpdateInput.AppUsers = new SelectList(appUsers, "Value", "Text");
+                taskUpdateInput.TaskSituations = new SelectList(taskSituations, "Value", "Text");
+            }
+            return View(taskUpdateInput);
+        }
     }
 }
+
