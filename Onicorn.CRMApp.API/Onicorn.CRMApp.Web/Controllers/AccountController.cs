@@ -138,5 +138,10 @@ namespace Onicorn.CRMApp.Web.Controllers
             await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

@@ -30,6 +30,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseStatusCodePagesWithReExecute("/ErrorPage/Error404/");
+
 app.UseStaticFiles();
 
 app.UseRouting();
