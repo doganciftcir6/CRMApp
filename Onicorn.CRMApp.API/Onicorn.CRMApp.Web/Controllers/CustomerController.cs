@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Onicorn.CRMApp.Shared.Utilities.Response;
-using Onicorn.CRMApp.Web.Models;
 using System.Net.Http;
 using System.Net;
 using NuGet.Common;
 using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Onicorn.CRMApp.Web.Models.CustomerModels;
 
 namespace Onicorn.CRMApp.Web.Controllers
 {

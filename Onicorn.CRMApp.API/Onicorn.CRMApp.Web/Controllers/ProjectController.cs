@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Onicorn.CRMApp.Shared.Utilities.Response;
-using Onicorn.CRMApp.Web.Models;
+using Onicorn.CRMApp.Web.Models.ProjectModels;
 using System.Net;
 using System.Text;
 

@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Onicorn.CRMApp.Shared.Utilities.Response;
-using Onicorn.CRMApp.Web.Models;
+using Onicorn.CRMApp.Web.Models.AppUserModels;
+using Onicorn.CRMApp.Web.Models.TaskModels;
+using Onicorn.CRMApp.Web.Models.TaskSituationModels;
 using System.Net;
 using System.Text;
 using System.Text.Json;

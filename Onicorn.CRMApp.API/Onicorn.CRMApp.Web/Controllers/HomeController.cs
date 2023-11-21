@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Onicorn.CRMApp.Shared.Utilities.Response;
 using Onicorn.CRMApp.Web.Models;
+using Onicorn.CRMApp.Web.Models.StatisticModels;
 using System.Diagnostics;
 using System.Net.Http;
 
