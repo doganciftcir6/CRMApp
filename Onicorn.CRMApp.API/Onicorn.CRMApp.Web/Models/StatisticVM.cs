@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Onicorn.CRMApp.Dtos.StatisticDtos
+﻿namespace Onicorn.CRMApp.Web.Models
 {
-    public class StatisticDto
+    public class StatisticVM
     {
         public int UserCount { get; set; }
         public int MaleUserCount { get; set; }

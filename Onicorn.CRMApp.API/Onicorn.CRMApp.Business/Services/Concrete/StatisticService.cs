@@ -57,8 +57,8 @@ namespace Onicorn.CRMApp.Business.Services.Concrete
                 TaskCount = taskCount,
                 ActiveTaskCount = activeTaskCount,
                 FinishedTaskCount = FinishedTaskCount,
-                saleCount = salesCount,
-                totalSalesPrice = totalWithKDV,
+                SaleCount = salesCount,
+                TotalSalesPrice = totalWithKDV,
             };
 
             return CustomResponse<StatisticDto>.Success(statisticDto, ResponseStatusCode.OK);
