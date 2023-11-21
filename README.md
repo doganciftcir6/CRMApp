@@ -1,7 +1,7 @@
 # Onicorn.CRMApp.API
 # Fullstack CRM Uygulaması
 
-Bu proje, Asp.Net 7.0 kullanılarak geliştirilmiş bir fullstack CRM uygulamasıdır. Uygulama, ayrı bir API tarafı ve bu API'ın sunduğu endpointleri tüketen bir frontend içermektedir.
+Bu proje, Asp.Net 7.0 kullanılarak geliştirilmiş bir fullstack CRM uygulamasıdır. Uygulama, ayrı bir API tarafı ve bu API'ın sunduğu endpointleri tüketen bir frontend içermektedir. Projenin çalışır durumunu video dosyasından izleyebilirsiniz.
 
 ## Teknolojiler
 
